@@ -16,11 +16,11 @@ module decode_unit (
     reg [2:0] rd, rs1, rs2;                         // Register fields
 
     // Memory array to hold values from hex file
-    reg [15:0] reg_file [0:15];                     // Register file memory (16 registers)
+    reg [15:0] reg_file [0:7];                     // Register file memory (16 registers)
 
     // Load the hex file at the start
     initial begin
-        $readmemh("registers.hex", registers); // Load values from hex file
+        $readmemh("registers.hex", reg_file); // Load values from hex file
     end
 
     always @(posedge clk or posedge reset) begin

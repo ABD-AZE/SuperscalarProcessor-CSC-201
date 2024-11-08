@@ -114,10 +114,10 @@ Opcode (4 bits)	|      I (1 bit)  	|      rd (3 bits)	|    rs1 (3 bits)      |  
     - *Binary*: 1100_1_000_000_01111 → B 1 0 0 F
 
 12. *NOT rd, rs1* (Logical NOT, register-register)
-    - *Opcode*: 1100
+    - *Opcode*: 1001
     - *I*: 0
     - *Example*: NOT R1, R2 (bitwise NOT of R2, store the result in R1)
-    - *Binary*: 1100_0_001_010_00000 → C 0 1 2 0
+    - *Binary*: 1001_0_001_010_00000 → C 0 1 2 0
 
 13. *SRL rd, rs1, imm* (Logical Shift Right, immediate)
     - *Opcode*: 1011

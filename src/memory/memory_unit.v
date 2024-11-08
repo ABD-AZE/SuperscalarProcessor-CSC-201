@@ -20,7 +20,7 @@ module memory_access (
 
     // Initialize memory from file
     initial begin
-        $readmemb("./Data_Memory.txt", data_memory, 0, 31); // Initializes memory array from file
+        $readmemb("./Data_Memory.hex", data_memory, 0, 31); // Initializes memory array from file
     end
 
     // Decompose input signals into individual components
@@ -38,7 +38,7 @@ module memory_access (
         if (is_mem_write) begin
             // Write to memory
             data_memory[address] <= value;
-            fd = $fopen("./Data_Memory.txt", "w"); 
+            fd = $fopen("./Data_Memory.hex", "w"); 
             for (integer i = 0; i < 32; i = i + 1) begin 
                 $fdisplay(fd, "%b", data_memory[i]); // Update memory file with new data
             end

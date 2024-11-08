@@ -10,14 +10,14 @@
 7) We first are trying only for structural and data hazard. If time permits, also for control hazard.
 
 
-ISA DEGIGN.
-16 bit instruction => IR size =16 bits.
-No. of instructions = 16.
-No. of Registers = 8.
-So, size of opcode = 4 bits.
-Immediate bit size = 1 bit.
-Size of register = 3 bits.
-Memory Addressing: Word-addressable.
-
-The instruction format is divided as follows:
+ISA DEGIGN.<,br>
+16 bit instruction => IR size =16 bits. <br>
+No. of instructions = 16. <br>
+No. of Registers = 8.<br>
+So, size of opcode = 4 bits.<br>
+Immediate bit size = 1 bit.<br>
+Size of register = 3 bits.<br>
+Memory Addressing: Word-addressable.<br>
+<br>
+The instruction format is divided as follows: <br>
 Opcode (4 bits)	|      I (1 bit)  	|      rd (3 bits)	|    rs1 (3 bits)      |     	rs2/imm (5 bits)

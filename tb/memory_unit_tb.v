@@ -15,7 +15,7 @@ module memory_unit_tb;
     // Initialize signals
     initial begin
         $dumpfile("memory_access.vcd"); // Dump file for waveform
-        $dumpvars(0, tb_memory_access);
+        $dumpvars(0, memory_unit_tb);
         clk = 0;
         Address_Value_RegAddress_isLoad_isMemWrite_isWrite = 0;
 

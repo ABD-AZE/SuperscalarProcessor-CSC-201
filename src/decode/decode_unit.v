@@ -20,7 +20,7 @@ module decode_unit (
 
     // Load the hex file at the start
     initial begin
-        $readmemh("reg_file.hex", reg_file); // Load values from hex file
+        $readmemh("registers.hex", registers); // Load values from hex file
     end
 
     always @(posedge clk or posedge reset) begin

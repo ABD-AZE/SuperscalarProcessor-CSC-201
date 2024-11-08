@@ -3,14 +3,14 @@ module fetch_unit (
     input wire reset,
     input wire stall,                                                 
     input wire is_branch_taken,                  // Signal that branch is taken
-    input wire [31:0] branch_target,          // Branch target address
-    output reg [31:0] instr1,                 // First instruction for decode
-    output reg [31:0] instr2                  // Second instruction for decode
+    input wire [15:0] branch_target,          // Branch target address
+    output reg [15:0] instr1,                 // First instruction for decode
+    output reg [15:0] instr2                  // Second instruction for decode
 );
 
-    reg [31:0] pc;                            // Program Counter
-    reg [31:0] instruction_memory [0:10];    // Instruction memory (single-port)
-    reg [31:0] buffer [1:0];                  // 2-entry instruction buffer
+    reg [15:0] pc;                            // Program Counter
+    reg [15:0] instruction_memory [0:10];    // Instruction memory (single-port)
+    reg [15:0] buffer [1:0];                  // 2-entry instruction buffer
 
     // Initialize instruction memory (for simulation)
     initial begin

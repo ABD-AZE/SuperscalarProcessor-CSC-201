@@ -14,6 +14,8 @@ ISA DEGIGN.<,br>
 16 bit instruction => IR size =16 bits. <br>
 No. of instructions = 16. <br>
 No. of Registers = 8.<br>
+memory size = 32 words<br>
+pc size = 16 bit<br>
 So, size of opcode = 4 bits.<br>
 Immediate bit size = 1 bit.<br>
 Size of register = 3 bits.<br>

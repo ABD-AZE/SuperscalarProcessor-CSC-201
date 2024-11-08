@@ -1,4 +1,5 @@
 module ExecuteUnit (
+    input wire clk,                           // Added clock input for synchronization
     input wire [31:0] pc1, pc2,               // Program counters for each pipeline
     input wire [31:0] opA1, opA2,             // Operands A for each pipeline
     input wire [31:0] opB1, opB2,             // Operands B for each pipeline
@@ -15,24 +16,24 @@ module ExecuteUnit (
 
     // Instantiate ALU for Pipeline 1
     alu alu1 (
-        .clk(1'b0),                           // Assuming combinational mode
+        .clk(clk),                           // Pass the clock signal
         .alusignals(aluControl1),
         .op1(opA1[15:0]),
         .op2(opB1[15:0]),
         .immx(opB1[4:0]),                     // Assuming lower bits for immediate
         .isimmediate(1'b0),                   // Update if needed
-        .aluresult(aluResult1[15:0])
+        .aluresult(aluResult1)               // Output is now 32 bits
     );
 
     // Instantiate ALU for Pipeline 2
     alu alu2 (
-        .clk(1'b0),                           // Assuming combinational mode
+        .clk(clk),                           // Pass the clock signal
         .alusignals(aluControl2),
         .op1(opA2[15:0]),
         .op2(opB2[15:0]),
         .immx(opB2[4:0]),                     // Assuming lower bits for immediate
         .isimmediate(1'b0),                   // Update if needed
-        .aluresult(aluResult2[15:0])
+        .aluresult(aluResult2)               // Output is now 32 bits
     );
 
     // Branch logic for Pipeline 1
@@ -62,7 +63,7 @@ module ExecuteUnit (
                 branchPC2 = branchTarget2;
             end else begin
                 isBranchTaken2 = 0;
-                branchPC2 = pc2 + 4; // Next sequential PC
+                branchPC2 = pc2 +  4; // Next sequential PC
             end
         end else if (isRet2) begin
             isBranchTaken2 = 1;
@@ -96,7 +97,7 @@ module alu(
     input wire [15:0] op2,
     input wire [4:0] immx,
     input wire isimmediate,
-    output reg [15:0] aluresult
+    output reg [31:0] aluresult // Changed to 32 bits
 );
     wire [15:0] A = op1;
     wire [15:0] B = isimmediate ? immx : op2;
@@ -105,15 +106,15 @@ module alu(
         if (alusignals[0]) begin
             aluresult <= A + B;
         end else if (alusignals[1]) begin
-            aluresult <= A + B;
+            aluresult <= A + B; // This line is redundant
         end else if (alusignals[2]) begin
-            aluresult <= A + B;
+            aluresult <= A + B; // This line is redundant
         end else if (alusignals[3]) begin
             aluresult <= A - B;
         end else if (alusignals[4]) begin
             aluresult <= A * B;
         end else if (alusignals[5]) begin
-            aluresult <= A - B;
+            aluresult <= A - B; // This line is redundant
         end else if (alusignals[6]) begin
             aluresult <= B;
         end else if (alusignals[7]) begin
@@ -127,7 +128,7 @@ module alu(
         end else if (alusignals[11]) begin
             aluresult <= A >> B;
         end else begin
-            aluresult <= 16'b0;
+            aluresult <= 32'b0; // Changed to 32 bits
         end
     end
 endmodule

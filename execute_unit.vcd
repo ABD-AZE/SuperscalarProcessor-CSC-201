@@ -1,0 +1,56 @@
+$date
+	Sat Nov  9 02:06:15 2024
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module tb_execute_unit $end
+$var wire 1 ! isbranchtaken $end
+$var wire 16 " branchpc [15:0] $end
+$var reg 16 # brachtarget [15:0] $end
+$var reg 1 $ isBeq $end
+$var reg 1 % isBgt $end
+$var reg 1 & isunconditionalbranch $end
+$scope module uut $end
+$var wire 16 ' brachtarget [15:0] $end
+$var wire 1 $ isBeq $end
+$var wire 1 % isBgt $end
+$var wire 1 & isunconditionalbranch $end
+$var wire 1 ( flag $end
+$var reg 16 ) branchpc [15:0] $end
+$var reg 1 ! isbranchtaken $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+b0 )
+1(
+b1001000110100 '
+0&
+0%
+0$
+b1001000110100 #
+b0 "
+0!
+$end
+#10
+1!
+b1001000110100 "
+b1001000110100 )
+1&
+#20
+1$
+0&
+#30
+0!
+b0 "
+b0 )
+1%
+0$
+#40
+0%
+#60

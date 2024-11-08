@@ -34,7 +34,7 @@ module alu_tb();
         $dumpfile("alu_unit.vcd");
         $dumpvars(0,alu_tb);
         // Initialize inputs
-        op1 = 16'h0002;    // Operand 1
+        op1 = 16'h0005;    // Operand 1
         op2 = 16'h0003;    // Operand 2
         immx = 5'b00011;   // Immediate value
         isimmediate = 0;
@@ -62,7 +62,7 @@ module alu_tb();
         $display("MOV (immediate): Result = %h", aluresult);
 
         // Test OR operation
-        alusignals = 12'b000001000000; // isor
+        alusignals = 12'b000010000000; // isor
         #10;
         $display("OR: Result = %h", aluresult);
 
@@ -85,6 +85,11 @@ module alu_tb();
         alusignals = 12'b10000000000; // islsr
         #10;
         $display("LSR: Result = %h", aluresult);
+        
+        // Test CMP operation
+        alusignals = 12'b000000100000; // iscmp
+        #10;
+        $display("CMP: Result = %h", aluresult);
 
         // End of test
         $finish;

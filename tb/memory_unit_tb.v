@@ -1,4 +1,4 @@
-module tb_memory_access;
+module memory_unit_tb;
 
     // Testbench signals
     reg [35:0] Address_Value_RegAddress_isLoad_isMemWrite_isWrite; // Combined input signal
@@ -6,7 +6,7 @@ module tb_memory_access;
     wire [10:0] write;                                              // Output wire
 
     // Instantiate the memory_access module
-    memory_access uut (
+    memory_unit uut (
         .Address_Value_RegAddress_isLoad_isMemWrite_isWrite(Address_Value_RegAddress_isLoad_isMemWrite_isWrite),
         .clk(clk),
         .write(write)

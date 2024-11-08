@@ -1,7 +1,7 @@
 // update the flags register and do the required calculations
 module alu(
     input wire clk,
-    input wire [11:0] alusignals,
+    input wire [12:0] alusignals,
     /*
         isadd
         isld
@@ -15,6 +15,7 @@ module alu(
         isnot
         islsl
         islsr
+        isxor
     */
     input wire [15:0] op1,
     input wire [15:0] op2,
@@ -39,6 +40,7 @@ module alu(
     wire isnot = alusignals[9];
     wire islsl = alusignals[10];
     wire islsr = alusignals[11];
+    wire isxor = alusignals[12];
     reg [15:0] result;
     initial begin
         $readmemh("registers.hex", reg_file);
@@ -74,6 +76,8 @@ module alu(
             result <= A & B;
         end else if (isnot) begin
             result <= ~A;
+        end else if (isxor) begin
+            result <= A ^ B;
         end else if (islsl) begin
             result <= A << B;
         end else if (islsr) begin

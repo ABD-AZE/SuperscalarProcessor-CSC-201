@@ -3,7 +3,7 @@
 module alu_tb();
     // Inputs
     reg clk;
-    reg [11:0] alusignals;
+    reg [12:0] alusignals;
     reg [15:0] op1;
     reg [15:0] op2;
     reg [4:0] immx;

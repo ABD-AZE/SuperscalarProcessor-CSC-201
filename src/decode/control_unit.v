@@ -15,7 +15,6 @@ module control_unit(
     output reg isnot,
     output reg islsl,
     output reg islsr,
-    output reg isxor,
     output reg isbeq,
     output reg isbgt,
     output reg iswb,
@@ -55,7 +54,6 @@ module control_unit(
             isnot      <= 0;
             islsl      <= 0;
             islsr      <= 0;
-            isxor      <= 0;
             isbeq      <= 0;
             isbgt      <= 0;
             iswb       <= 0;
@@ -74,7 +72,6 @@ module control_unit(
             isnot      <= 0;
             islsl      <= 0;
             islsr      <= 0;
-            isxor      <= 0;
             isbeq      <= 0;
             isbgt      <= 0;
             iswb       <= 0;

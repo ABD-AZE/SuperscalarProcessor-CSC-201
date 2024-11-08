@@ -5,10 +5,10 @@ module tb_fetch_unit;
     reg reset;
     reg stall;
     reg is_branch_taken;
-    reg [31:0] branch_target;
-    wire [31:0] instr1;
-    wire [31:0] instr2;
-    reg [31:0] pc;
+    reg [15:0] branch_target;
+    wire [15:0] instr1;
+    wire [15:0] instr2;
+    reg [15:0] pc;
     // Instantiate the fetch unit
     fetch_unit uut (
         .clk(clk),
@@ -52,7 +52,7 @@ module tb_fetch_unit;
         begin
             // Test fetching two instructions without a branch
             is_branch_taken = 0;
-            branch_target = 32'h0;
+            branch_target = 16'h0;
             stall = 0;
 
             // Observe the outputs
@@ -66,7 +66,7 @@ module tb_fetch_unit;
         begin
             // Test fetching with a branch taken
             is_branch_taken = 1;
-            branch_target = 32'h5; // Set branch target to a new address
+            branch_target = 16'h5; // Set branch target to a new address
             stall = 0;
 
             // Observe the outputs after branch handling
@@ -81,7 +81,7 @@ module tb_fetch_unit;
             // Test with the stall signal active
             stall = 1;
             is_branch_taken = 0;
-            branch_target = 32'h0;
+            branch_target = 16'h0;
             reset = 0;
 
             // No new fetch should occur due to stall

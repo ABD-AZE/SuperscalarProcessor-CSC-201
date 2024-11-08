@@ -76,11 +76,12 @@ module tb_ExecuteUnit;
         $display("ALU1 Branch (BEQ Fail): Taken = %b, Branch PC = %h", isBranchTaken1, branchPC1);
 
         // Test return condition
-        isBranch1 = 0; isRet1 = 1; aluResult1 = 32'hDEADBEEF; // Simulated return address
+        isBranch1 = 0; isRet1 = 1; opA1 = 32'h00000000; opB1 = 32'h00000000; // Return address
         @(posedge clk);
-        $display("ALU1 Return: Taken = %b, PC = %h", isBranchTaken1, branchPC1);
+        $display("ALU1 Return: Taken = %b, Branch PC = %h", isBranchTaken1, branchPC1);
 
         // End simulation
         $finish;
     end
+
 endmodule

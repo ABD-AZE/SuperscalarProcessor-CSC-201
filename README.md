@@ -35,7 +35,7 @@ Opcode (4 bits)	|      I (1 bit)  	|      rd (3 bits)	|    rs1 (3 bits)      |  
    
    - *I*: 1 (register-immediate)
    - *Example*: ADD R1, R2, 5 (add R2 and immediate 5, store in R1)
-   - *Binary*: 0001_1_001_010_00101 → 1 1 1 2 5
+   - *Binary*: 0000_1_001_010_00101 → 1 1 1 2 5
 
 2. *SUB rd, rs1, rs2* (Arithmetic subtract, register-register or register-immediate)
    - *Opcode*: 0001
@@ -45,7 +45,7 @@ Opcode (4 bits)	|      I (1 bit)  	|      rd (3 bits)	|    rs1 (3 bits)      |  
    
    - *I*: 1 (register-immediate)
    - *Example*: SUB R4, R5, 7 (subtract immediate 7 from R5, store in R4)
-   - *Binary*: 0010_1_100_101_00111 → 2 1 4 5 7
+   - *Binary*: 0001_1_100_101_00111 → 2 1 4 5 7
 
 3. *MUL rd, rs1, rs2* (Arithmetic multiply, register-register or register-immediate)
    - *Opcode*: 0010
@@ -55,7 +55,7 @@ Opcode (4 bits)	|      I (1 bit)  	|      rd (3 bits)	|    rs1 (3 bits)      |  
    
    - *I*: 1 (register-immediate)
    - *Example*: MUL R7, R0, 3 (multiply R0 by immediate 3, store in R7)
-   - *Binary*: 0011_1_111_000_00011 → 3 1 7 0 3
+   - *Binary*: 0010_1_111_000_00011 → 3 1 7 0 3
 
 4. *LOAD rd, [rs1 + imm]* (Load from memory with immediate offset)
    - *Opcode*: 0011
@@ -89,7 +89,7 @@ Opcode (4 bits)	|      I (1 bit)  	|      rd (3 bits)	|    rs1 (3 bits)      |  
    - *Opcode*: 0111
    - *I*: 0 (register-register)
    - *Example*: OR R5, R6, R7 (bitwise OR between R6 and R7, store in R5)
-   - *Binary*: 1000_0_101_110_00111 → 8 0 5 6 7
+   - *Binary*: 0111_0_101_110_00111 → 8 0 5 6 7
    
    - *I*: 1 (register-immediate)
    - *Example*: OR R5, R6, 7 (bitwise OR between R6 and immediate 7, store in R5)

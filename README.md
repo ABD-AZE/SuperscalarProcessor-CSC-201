@@ -107,7 +107,7 @@ Opcode (4 bits)	|      I (1 bit)  	|      rd (3 bits)	|    rs1 (3 bits)      |  
     - *Example*: BEQ R4, R5, 8 (if R4 equals R5, branch to PC + offset 8)
     - *Binary*: 1101_0_100_101_01000 → A 0 4 5 8
 
-11. *JUMP target* (Unconditional Jump)
+11. *JUMP target*
     - *Opcode*: 1100
     - *I*: 1 (Always immediate)
     - *Example*: JUMP 15 (Jump to address 15)

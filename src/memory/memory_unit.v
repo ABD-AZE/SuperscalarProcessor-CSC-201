@@ -1,4 +1,4 @@
-module memory_access (
+module memory_unit (
     input wire [35:0] Address_Value_RegAddress_isLoad_isMemWrite_isWrite, // Combined input
     input wire clk,                                                       // Clock
     output reg [10:0] write                                               // Output wire

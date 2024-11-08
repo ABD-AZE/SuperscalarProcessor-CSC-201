@@ -1,11 +1,11 @@
 module memory_access (
-    input wire [15:0] Address_Value_RegAddress_isLoad_isMemWrite_isWrite, // Combined input
+    input wire [35:0] Address_Value_RegAddress_isLoad_isMemWrite_isWrite, // Combined input
     input wire clk,                                                       // Clock
     output reg [10:0] write                                               // Output wire
 );
 
     // Signal Declarations
-    wire [4:0] address;               // 5-bit memory address
+    wire [4:0] address;               // 5-bit memory address (0-31)
     wire [15:0] value;                // 16-bit data value
     wire is_load;                     // Load signal
     wire is_mem_write;                // Memory write signal
@@ -13,9 +13,15 @@ module memory_access (
     wire is_write;                    // Write enable signal
     reg is_write_temp;                // Temporary write enable signal
 
-    // Internal Data Signals
-    wire [15:0] dm_output;            // Output data from data memory
+    // Data Memory Array
+    reg [15:0] data_memory [0:31];    // 16-bit word memory with 32 entries
     reg [15:0] temp_write_data;       // Temporary register for write-back data
+    integer fd;                       // File handler for memory file
+
+    // Initialize memory from file
+    initial begin
+        $readmemb("./Data_Memory.txt", data_memory, 0, 31); // Initializes memory array from file
+    end
 
     // Decompose input signals into individual components
     assign address      = Address_Value_RegAddress_isLoad_isMemWrite_isWrite[4:0];   // 5 bits for address (0-31)
@@ -24,24 +30,25 @@ module memory_access (
     assign is_mem_write = Address_Value_RegAddress_isLoad_isMemWrite_isWrite[17];    // 1 bit for memory write
     assign is_write     = Address_Value_RegAddress_isLoad_isMemWrite_isWrite[18];    // 1 bit for write enable
 
-    // Set up data memory
-    data_memory DM (
-        .memaddress(address),
-        .inputdata(value),
-        .ismemwrite(is_mem_write),
-        .outputdata(dm_output)
-    );
-
-    // Register Write Control Logic
+    // Memory Write and Load Operations
     always @(posedge clk) begin
         is_write_temp <= is_write;
         reg_to_write <= Address_Value_RegAddress_isLoad_isMemWrite_isWrite[21:19]; // 3 bits for register address
 
-        // Load data from memory or directly use the provided value
-        if (is_load) begin
-            temp_write_data <= dm_output; // Load from memory
+        if (is_mem_write) begin
+            // Write to memory
+            data_memory[address] <= value;
+            fd = $fopen("./Data_Memory.txt", "w"); 
+            for (integer i = 0; i < 32; i = i + 1) begin 
+                $fdisplay(fd, "%b", data_memory[i]); // Update memory file with new data
+            end
+            $fclose(fd);
+        end else if (is_load) begin
+            // Load from memory
+            temp_write_data <= data_memory[address];
         end else begin
-            temp_write_data <= value;     // Directly use the value from the input
+            // Directly use the provided value for non-memory operations
+            temp_write_data <= value;
         end
     end
 

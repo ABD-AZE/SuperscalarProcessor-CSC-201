@@ -44,8 +44,8 @@ module tb_decode_unit;
         #10 reset = 0;
 
         // Run test scenarios
-        // test_nop;
-        // #10 test_immediate;
+        test_nop;
+        #10 test_immediate;
         test_register;
         #10 test_branch;
         #10 test_branch_taken;

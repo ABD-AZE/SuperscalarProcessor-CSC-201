@@ -3,7 +3,7 @@
 module alu_tb();
     // Inputs
     reg clk;
-    reg [12:0] alusignals;
+    reg [11:0] alusignals;
     reg [15:0] op1;
     reg [15:0] op2;
     reg [4:0] immx;
@@ -46,6 +46,16 @@ module alu_tb();
         #10;
         $display("ADD: Result = %h", aluresult);
 
+        // Test LOAD operation
+        alusignals = 12'b000000000010; // isld
+        #10;
+        $display("LOAD: Result = %h", aluresult);
+
+        // Test STORE operation
+        alusignals = 12'b0000000000100; // isst
+        #10;
+        $display("STORE: Result = %h", aluresult);
+        
         // Test SUB operation
         alusignals = 12'b000000001000; // issub
         #10;
@@ -56,6 +66,11 @@ module alu_tb();
         #10;
         $display("MUL: Result = %h", aluresult);
 
+        // Test CMP operation
+        alusignals = 12'b000000100000; // iscmp
+        #10;
+        $display("CMP: Result = %h", aluresult);
+        
         // Test MOV operation
         alusignals = 12'b000001000000; // ismov
         #10;
@@ -77,19 +92,16 @@ module alu_tb();
         $display("NOT: Result = %h", aluresult);
 
         // Test LSL operation
-        alusignals = 12'b01000000000; // islsl
+        alusignals = 12'b010000000000; // islsl
         #10;
         $display("LSL: Result = %h", aluresult);
 
         // Test LSR operation
-        alusignals = 12'b10000000000; // islsr
+        alusignals = 12'b100000000000; // islsr
         #10;
         $display("LSR: Result = %h", aluresult);
         
-        // Test CMP operation
-        alusignals = 12'b000000100000; // iscmp
-        #10;
-        $display("CMP: Result = %h", aluresult);
+
 
         // End of test
         $finish;

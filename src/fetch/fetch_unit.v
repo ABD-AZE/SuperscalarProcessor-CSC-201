@@ -42,7 +42,7 @@ module fetch_unit (
             flush = 0;
         end 
         else if (stall) begin 
-            // If stalled, hold current buffer values (instructions)
+            // I`f stalled, hold current buffer values (instructions)
             buffer[0] <= buffer[0];
             buffer[1] <= buffer[1];
         end 

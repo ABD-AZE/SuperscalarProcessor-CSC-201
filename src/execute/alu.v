@@ -78,16 +78,15 @@ module alu(
         end else if (ismul) begin
             result <= A * B;
         end else if (iscmp) begin // 1 for equal, 2 for greater than  , 0 for less than 
-            result <= A - B;
-            if (result == 0) begin
+            if (A == B) begin
                 result <= 16'b1;
-                reg_file[7] <= 16'b1;
-            end else if (result>0) begin
+                reg_file[7] = 16'b1;
+            end else if (A>B) begin
                 result <= 16'b0;
-                reg_file[7] <= 16'h2;
+                reg_file[7] = 16'h2;
             end else begin
                 result <= 16'b0;
-                reg_file[7] <= 16'h0;
+                reg_file[7] = 16'h0;
             end
         end else if (ismov) begin
             result <= B;
@@ -106,7 +105,6 @@ module alu(
         end else begin
             result <= 16'b0;
         end
-        
     end
     assign aluresult = result;
     always @(*) begin
@@ -117,6 +115,7 @@ module alu(
                 // Write each modified memory value to the new file
                 for (i = 0; i < 8; i = i + 1) begin
                     $fwrite(file, "%h\n", reg_file[i]);  // Write as hexadecimal
+                    $display("Data written to register file successfully. %h",reg_file[i]);
                 end
                 $fclose(file);  // Close the file
                 $display("Data written to register file successfully.");

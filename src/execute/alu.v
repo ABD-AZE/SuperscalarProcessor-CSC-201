@@ -1,7 +1,7 @@
 // update the flags register and do the required calculations
 module alu(
     input wire clk,
-    input wire [12:0] alusignals,
+    input wire [11:0] alusignals,
     /*
         isadd
         isld
@@ -15,7 +15,6 @@ module alu(
         isnot
         islsl
         islsr
-        isxor
     */
     input wire [15:0] op1,
     input wire [15:0] op2,
@@ -40,7 +39,6 @@ module alu(
     wire isnot;
     wire islsl;
     wire islsr;
-    wire isxor;
     assign isadd = alusignals[0];
     assign isld = alusignals[1];
     assign isst = alusignals[2];
@@ -53,7 +51,6 @@ module alu(
     assign isnot = alusignals[9];
     assign islsl = alusignals[10];
     assign islsr = alusignals[11];
-    assign isxor = alusignals[12];
 
     reg [15:0] result;
     initial begin
@@ -96,8 +93,6 @@ module alu(
             result <= A & B;
         end else if (isnot) begin
             result <= ~A;
-        end else if (isxor) begin
-            result <= A ^ B;
         end else if (islsl) begin
             result <= A << B;
         end else if (islsr) begin

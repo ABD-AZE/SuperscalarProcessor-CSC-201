@@ -50,7 +50,7 @@ module tb_decode_unit;
         #10 test_branch;
         #10 test_branch_taken;
         #10 test_stall;
-        #160 $finish;
+        #10 $finish;
     end
 
     // Clock generation

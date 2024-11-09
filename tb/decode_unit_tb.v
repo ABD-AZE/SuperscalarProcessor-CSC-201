@@ -63,7 +63,7 @@ module tb_decode_unit;
         begin
             is_branch_taken = 0;
             instr = 16'h0000; // NOP instruction
-            // @(posedge clk); // Wait for a clock edge to capture output
+            @(posedge clk); // Wait for a clock edge to capture output
             $display("NOP | opcode=%h, imm=%h, imm_flag=%h, op1=%h, op2=%h, branch_target=%h", 
                       opcode, imm, imm_flag, op1, op2, branch_target);
         end
@@ -73,7 +73,7 @@ module tb_decode_unit;
     task test_immediate;
         begin
             instr = 16'hFCB1; // Immediate instruction with imm_flag set imm =00111, rs1=001
-            // @(posedge clk); // Wait for a clock edge to capture output
+            @(posedge clk); // Wait for a clock edge to capture output
             $display("Immediate | opcode=%h, imm=%h, imm_flag=%h, op1=%h, op2=%h, branch_target=%h", 
                       opcode, imm, imm_flag, op1, op2, branch_target);
         end
@@ -83,7 +83,7 @@ module tb_decode_unit;
     task test_register;
         begin
             instr = 16'h2294; // Register instruction without imm_flag
-            // @(posedge clk); // Wait for a clock edge to capture output
+            @(posedge clk); // Wait for a clock edge to capture output
             $display("Register | opcode=%h, imm=%h, imm_flag=%h, op1=%h, op2=%h, branch_target=%h", 
                       opcode, imm, imm_flag, op1, op2, branch_target);
         end
@@ -93,7 +93,7 @@ module tb_decode_unit;
     task test_branch;
         begin
             instr = 16'hDE60; // Branch instruction
-            // @(posedge clk); // Wait for a clock edge to capture output
+            @(posedge clk); // Wait for a clock edge to capture output
             $display("Branch | opcode=%h, imm=%h, imm_flag=%h, op1=%h, op2=%h, branch_target=%h", 
                       opcode, imm, imm_flag, op1, op2, branch_target);
         end
@@ -104,7 +104,7 @@ module tb_decode_unit;
         begin
             is_branch_taken = 1;
             instr = 16'h0000;
-            // @(posedge clk); // Wait for a clock edge to capture output
+            @(posedge clk); // Wait for a clock edge to capture output
             $display("Branch Taken | opcode=%h, imm=%h, imm_flag=%h, op1=%h, op2=%h, branch_target=%h", 
                       opcode, imm, imm_flag, op1, op2, branch_target);
         end
@@ -115,7 +115,7 @@ module tb_decode_unit;
         begin
             stall = 1;
             instr = 16'h3A51; // New instruction, but stall should prevent decoding
-            // @(posedge clk); // Wait for a clock edge to capture output
+            @(posedge clk); // Wait for a clock edge to capture output
             $display("Stall | opcode=%h, imm=%h, imm_flag=%h, op1=%h, op2=%h, branch_target=%h", 
                       opcode, imm, imm_flag, op1, op2, branch_target);
         end

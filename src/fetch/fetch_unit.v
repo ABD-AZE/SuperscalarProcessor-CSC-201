@@ -4,8 +4,9 @@ module fetch_unit (
     input wire stall,
     input wire is_branch_taken,               // Signal that branch is taken
     input wire [15:0] branch_target,          // Branch target address
-    output reg[15:0] instr1,                 // First instruction for decode
-    output reg [15:0] instr2                  // Second instruction for decode
+    input wire issingleinstr,
+    output wire[15:0] instr1,                 // First instruction for decode
+    output wire [15:0] instr2                  // Second instruction for decode
 );
     reg [15:0] pc;                            // Program Counter
     reg [15:0] instruction_memory [0:10];     // Instruction memory (single-port)
@@ -21,6 +22,7 @@ module fetch_unit (
         instr2_reg <=  16'h0;
 
     end
+    reg [15:0] instr1_reg, instr2_reg;                // Instructions for decode
     // PC update logic with branch handling and buffer control
     always @(posedge clk or posedge reset) begin
         if (reset) begin
@@ -42,17 +44,23 @@ module fetch_unit (
         end 
         else begin
             // Fetch two instructions into buffer on each cycle
-            buffer[0] <= instruction_memory[pc];       // Fetch instruction at PC
-            buffer[1] <= instruction_memory[pc + 1];   // Fetch next instruction
-            pc <= pc + 2;                              // Increment PC by 2 for 2 instructions
+            if(!issingleinstr) begin
+                buffer[0] <= instruction_memory[pc];       // Fetch instruction at PC
+                buffer[1] <= instruction_memory[pc + 1];   // Fetch next instruction
+                pc <= pc + 2;                              // Increment PC by 2 for 2 instructions
+            end else begin
+                buffer[0] <= instruction_memory[pc];       // Fetch instruction at PC
+                buffer[1] <= 16'h0;                         // NOP for buffer
+                pc <= pc + 1;                              // Increment PC by 1 for 1 instruction
+            end
         end
         // Update instr1 and instr2 with buffer values from previous cycle (next-cycle update)
         if(!stall) begin
             instr1_reg <= buffer[0];
             instr2_reg <= buffer[1];
         end else begin
-            instr1_reg <= 16'h0;
-            instr2_reg <= 16'h0;
+            instr1 <= 16'h0;
+            instr2 <= 16'h0;
         end
     end
     assign instr1 = instr1_reg;

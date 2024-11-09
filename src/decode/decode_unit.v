@@ -10,7 +10,6 @@ module decode_unit (
     output wire [15:0] op1, op2,                    // Operand values
     output wire imm_flag                            // Immediate flag
 );
-
     // Internal registers for decoding and pipeline
     reg [4:0] imm_reg;
     reg [3:0] opcode_reg;
@@ -66,7 +65,6 @@ module decode_unit (
                 op1_next <= registers[rs1];
                 op2_next <= registers[rs2];
             end
-
             branch_target_next <= {5'b0, instr[10:0]};
         end
 
@@ -77,8 +75,15 @@ module decode_unit (
         op1_reg <= op1_next;
         op2_reg <= op2_next;
         imm_flag_reg <= imm_flag_next;
+        if(stall) begin 
+            opcode_reg <= 4'h0;
+            imm_reg <= 5'h00;
+            imm_flag_reg <= 0;
+            branch_target_reg <= 16'h0;
+            op1_reg <= 16'h0;
+            op2_reg <= 16'h0;
+        end
     end
-
     // Continuous assignments to output wires
     assign opcode = opcode_reg;
     assign imm = imm_reg;

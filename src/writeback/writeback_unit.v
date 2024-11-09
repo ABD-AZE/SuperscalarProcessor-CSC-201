@@ -24,10 +24,11 @@ module writeback_unit(
         end
     end
     always @(*) begin
-        file = $fopen("writeback.hex", "w");
+        file = $fopen("registers.hex", "w");
         for (i = 0; i < 8; i = i + 1) begin
             $fwrite(file, "%h\n", reg_file[i]); 
         end
+        $fclose(file);
     end
 
 

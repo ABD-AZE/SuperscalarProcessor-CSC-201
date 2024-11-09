@@ -52,7 +52,7 @@ module alu_tb();
         $display("LOAD: Result = %h", aluresult);
 
         // Test STORE operation
-        alusignals = 12'b0000000000100; // isst
+        alusignals = 12'b000000000100; // isst
         #10;
         $display("STORE: Result = %h", aluresult);
         

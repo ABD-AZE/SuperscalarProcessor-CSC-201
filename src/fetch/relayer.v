@@ -36,66 +36,101 @@ module relayer_unit(
             instr2 = instr1;
             instr1 = singinstr;
         end
-        for(i=0;i<3;i=i+1) begin
-            if(buffer1[i][15:12]!=nop) begin 
-                if(!((buffer1[i][10:8]!=instr1[7:5]&&instr1[11]==1)||(buffer1[i][10:8]!=instr1[7:5]&&buffer1[i][10:8]!=instr1[4:2]&&instr1[11]==0))) begin
-                    p=1;
-                end
-            end
+        if (instr1[15:12] == nop && instr2[15:12] == nop) begin
+            instr1_out=nop;
+            instr2_out=nop;
+            isstall_reg=0;
         end
-        if(p==0) begin
+        else if(instr1[15:12] == nop) begin
+            instr1_out=nop;
             for(i=0;i<3;i=i+1) begin
-                if(buffer2[i][15:12]!=nop) begin
-                    if(!((buffer2[i][10:8]!=instr1[7:5]&&instr1[11]==1)||(buffer2[i][10:8]!=instr1[7:5]&&buffer2[i][10:8]!=instr1[4:2]&&instr1[11]==0))) begin
+                if(buffer1[i][15:12]!=nop) begin 
+                    if(!((buffer1[i][10:8]!=instr1[7:5]&&instr1[11]==1)||(buffer1[i][10:8]!=instr1[7:5]&&buffer1[i][10:8]!=instr1[4:2]&&instr1[11]==0))) begin
                         p=1;
                     end
                 end
             end
-        end
-        if(p==1) begin
-            instr1_out = nop;
-            instr2_out = nop;
-            isstall_reg = 1;
-        end
-        else begin
-            instr1_out = instr1;
-            if(instr1!=nop) begin
-                if(!(((instr2[10:8] != instr1[10:8])&&(instr2[10:8]!=instr1[7:5])&&(instr1[11]==1))||((instr2[10:8] != instr1[10:8])&&(instr2[10:8]!=instr1[7:5])&&(instr1[11]==0)&&instr2[10:8]!=instr1[4:2])&&(((instr1[10:8] != instr2[10:8])&&(instr1[10:8]!=instr2[7:5])&&(instr2[11]==1))||((instr1[10:8] != instr2[10:8])&&(instr1[10:8]!=instr2[7:5])&&(instr2[11]==0)&&instr1[10:8]!=instr2[4:2])))) begin
-                    p=1;              
-                end     
-                if (p==1) begin
-                    instr2_out = nop;
-                end
-            end
-            else begin
-                p=0;
-            end
             if(p==0) begin
                 for(i=0;i<3;i=i+1) begin
                     if(buffer2[i][15:12]!=nop) begin
-                        if(!((buffer2[i][10:8]!=instr2[7:5]&&instr2[11]==1)||(buffer2[i][10:8]!=instr2[7:5]&&buffer2[i][10:8]!=instr2[4:2]&&instr2[11]==0))) begin
+                        if(!((buffer2[i][10:8]!=instr1[7:5]&&instr1[11]==1)||(buffer2[i][10:8]!=instr1[7:5]&&buffer2[i][10:8]!=instr1[4:2]&&instr1[11]==0))) begin
                             p=1;
                         end
                     end
                 end
                 if(p==0) begin
+                    instr2_out=instr2;
+                end
+                else begin
+                    instr2_out=nop;
+                end
+            end
+            else begin
+                instr2_out=nop;
+            end
+        end
+        else begin
+            for(i=0;i<3;i=i+1) begin
+                if(buffer1[i][15:12]!=nop) begin 
+                    if(!((buffer1[i][10:8]!=instr1[7:5]&&instr1[11]==1)||(buffer1[i][10:8]!=instr1[7:5]&&buffer1[i][10:8]!=instr1[4:2]&&instr1[11]==0))) begin
+                        p=1;
+                    end
+                end
+            end
+            if(p==0) begin
+                for(i=0;i<3;i=i+1) begin
+                    if(buffer2[i][15:12]!=nop) begin
+                        if(!((buffer2[i][10:8]!=instr1[7:5]&&instr1[11]==1)||(buffer2[i][10:8]!=instr1[7:5]&&buffer2[i][10:8]!=instr1[4:2]&&instr1[11]==0))) begin
+                            p=1;
+                        end
+                    end
+                end
+            end
+            if(p==1) begin
+                instr1_out = nop;
+                instr2_out = nop;
+                isstall_reg = 1;
+            end
+            else begin
+                instr1_out = instr1;
+                if(instr1!=nop) begin
+                    if(!(((instr2[10:8] != instr1[10:8])&&(instr2[10:8]!=instr1[7:5])&&(instr1[11]==1))||((instr2[10:8] != instr1[10:8])&&(instr2[10:8]!=instr1[7:5])&&(instr1[11]==0)&&instr2[10:8]!=instr1[4:2])&&(((instr1[10:8] != instr2[10:8])&&(instr1[10:8]!=instr2[7:5])&&(instr2[11]==1))||((instr1[10:8] != instr2[10:8])&&(instr1[10:8]!=instr2[7:5])&&(instr2[11]==0)&&instr1[10:8]!=instr2[4:2])))) begin
+                        p=1;              
+                    end     
+                    if (p==1) begin
+                        instr2_out = nop;
+                    end
+                end
+                else begin
+                    p=0;
+                end
+                if(p==0) begin
                     for(i=0;i<3;i=i+1) begin
-                        if(buffer1[i][15:12]!=nop) begin
-                            if(!((buffer1[i][10:8]!=instr2[7:5]&&instr2[11]==1)||(buffer1[i][10:8]!=instr2[7:5]&&buffer1[i][10:8]!=instr2[4:2]&&instr2[11]==0))) begin
+                        if(buffer2[i][15:12]!=nop) begin
+                            if(!((buffer2[i][10:8]!=instr2[7:5]&&instr2[11]==1)||(buffer2[i][10:8]!=instr2[7:5]&&buffer2[i][10:8]!=instr2[4:2]&&instr2[11]==0))) begin
                                 p=1;
                             end
                         end
                     end
-                end
-                if (p==0) begin
-                    instr2_out = instr2;
+                    if(p==0) begin
+                        for(i=0;i<3;i=i+1) begin
+                            if(buffer1[i][15:12]!=nop) begin
+                                if(!((buffer1[i][10:8]!=instr2[7:5]&&instr2[11]==1)||(buffer1[i][10:8]!=instr2[7:5]&&buffer1[i][10:8]!=instr2[4:2]&&instr2[11]==0))) begin
+                                    p=1;
+                                end
+                            end
+                        end
+                    end
+                    if (p==0) begin
+                        instr2_out = instr2;
+                    end
+                    else begin
+                        instr2_out = nop;
+                    end
                 end
                 else begin
                     instr2_out = nop;
                 end
-            end
-            else begin
-                instr2_out = nop;
             end
         end
         for(i=1;i<3;i=i+1) begin

@@ -1,0 +1,135 @@
+$date
+	Sun Nov 10 01:28:12 2024
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module tb_fetch_unit $end
+$var wire 16 ! instr2 [15:0] $end
+$var wire 16 " instr1 [15:0] $end
+$var reg 16 # branch_target [15:0] $end
+$var reg 1 $ clk $end
+$var reg 1 % is_branch_taken $end
+$var reg 1 & reset $end
+$var reg 1 ' stall $end
+$scope module uut $end
+$var wire 16 ( branch_target [15:0] $end
+$var wire 1 $ clk $end
+$var wire 16 ) instr1 [15:0] $end
+$var wire 16 * instr2 [15:0] $end
+$var wire 1 % is_branch_taken $end
+$var wire 1 + issingleinstr $end
+$var wire 1 & reset $end
+$var wire 1 ' stall $end
+$var reg 16 , instr1_reg [15:0] $end
+$var reg 16 - instr2_reg [15:0] $end
+$var reg 16 . pc [15:0] $end
+$upscope $end
+$scope task test_no_branch $end
+$upscope $end
+$scope task test_stall $end
+$upscope $end
+$scope task test_with_branch $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+bx .
+b0 -
+b0 ,
+z+
+b0 *
+b0 )
+b0 (
+0'
+0&
+0%
+0$
+b0 #
+b0 "
+b0 !
+$end
+#5
+b0 .
+1$
+1&
+#10
+0$
+#15
+b1 .
+1$
+0&
+#20
+0$
+#25
+b1 "
+b1 )
+b1 ,
+b10 .
+1$
+#30
+0$
+#35
+b10 "
+b10 )
+b10 ,
+b101 .
+1$
+b101 #
+b101 (
+1%
+#40
+0$
+#45
+b0 "
+b0 )
+b0 ,
+b110 .
+1$
+b0 #
+b0 (
+0%
+#50
+0$
+#55
+b110 "
+b110 )
+b110 ,
+b111 .
+1$
+#60
+0$
+#65
+b111 "
+b111 )
+b111 ,
+b1000 .
+1$
+#70
+0$
+#75
+b1000 "
+b1000 )
+b1000 ,
+b1001 .
+1$
+#80
+0$
+#85
+b1001 "
+b1001 )
+b1001 ,
+b1010 .
+1$
+#90
+0$
+#95
+b10000 "
+b10000 )
+b10000 ,
+b1011 .
+1$

@@ -7,7 +7,6 @@ module fetch_unit (
     output reg [15:0] instr1,                 // First instruction for decode
     output reg [15:0] instr2                  // Second instruction for decode
 );
-
     reg [15:0] pc;                            // Program Counter
     reg [15:0] instruction_memory [0:10];     // Instruction memory (single-port)
     reg [15:0] buffer [1:0];                  // 2-entry instruction buffer to hold current instructions
@@ -17,9 +16,6 @@ module fetch_unit (
         buffer[0] <= 0;
         buffer[1] <= 0;
     end
-
-    reg flush = 0;
-
     // PC update logic with branch handling and buffer control
     always @(posedge clk or posedge reset) begin
         if (reset) begin
@@ -33,14 +29,7 @@ module fetch_unit (
             pc <= branch_target;
             buffer[0] <= 0; // NOP for buffer
             buffer[1] <= 0; // NOP for buffer
-            flush = 1;
-        end 
-        else if (flush) begin
-            // Clear buffer after branch to ensure no stale instructions
-            buffer[0] <= 0; // NOP for buffer
-            buffer[1] <= 0; // NOP for buffer
-            flush = 0;
-        end 
+        end
         else if (stall) begin 
             // I`f stalled, hold current buffer values (instructions)
             buffer[0] <= buffer[0];
@@ -52,10 +41,13 @@ module fetch_unit (
             buffer[1] <= instruction_memory[pc + 1];   // Fetch next instruction
             pc <= pc + 2;                              // Increment PC by 2 for 2 instructions
         end
-
         // Update instr1 and instr2 with buffer values from previous cycle (next-cycle update)
-        instr1 <= buffer[0];
-        instr2 <= buffer[1];
+        if(!stall) begin
+            instr1 <= buffer[0];
+            instr2 <= buffer[1];
+        end else begin
+            instr1 <= 0;
+            instr2 <= 0;
+        end
     end
-
 endmodule

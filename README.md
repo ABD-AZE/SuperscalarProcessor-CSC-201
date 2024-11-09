@@ -142,3 +142,4 @@ Opcode (4 bits)	|      I (1 bit)  	|      rd (3 bits)	|    rs1 (3 bits)      |  
 - **Binary**: `1100_1_000_000_01111 → B 1 0 0 F`
 
 ---
+<img width="958" alt="image" src="https://github.com/user-attachments/assets/8f5587b9-af28-47ba-9f41-c63ecfe9faa2">

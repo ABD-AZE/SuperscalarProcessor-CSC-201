@@ -4,12 +4,14 @@ module fetch_unit (
     input wire stall,
     input wire is_branch_taken,               // Signal that branch is taken
     input wire [15:0] branch_target,          // Branch target address
-    output reg [15:0] instr1,                 // First instruction for decode
-    output reg [15:0] instr2                  // Second instruction for decode
+    output wire [15:0] instr1,                 // First instruction for decode
+    output wire [15:0] instr2                  // Second instruction for decode
 );
     reg [15:0] pc;                            // Program Counter
     reg [15:0] instruction_memory [0:10];     // Instruction memory (single-port)
-    reg [15:0] buffer [1:0];                  // 2-entry instruction buffer to hold current instructions
+    reg [15:0] buffer [1:0];                 // 2-entry instruction buffer to hold current instructions
+    reg [15:0] instr1_reg;
+    reg [15:0]  instr2_reg;
     // Initialize instruction memory (for simulation)
     initial begin
         $readmemh("instructions.hex", instruction_memory);
@@ -43,11 +45,13 @@ module fetch_unit (
         end
         // Update instr1 and instr2 with buffer values from previous cycle (next-cycle update)
         if(!stall) begin
-            instr1 <= buffer[0];
-            instr2 <= buffer[1];
+            instr1_reg <= buffer[0];
+            instr2_reg <= buffer[1];
         end else begin
-            instr1 <= 16'h0;
-            instr2 <= 16'h0;
+            instr1_reg <= 16'h0;
+            instr2_reg <= 16'h0;
         end
     end
+    assign instr1 = instr1_reg;
+    assign instr2 = instr2_reg;
 endmodule

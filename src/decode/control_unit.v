@@ -22,22 +22,22 @@ module control_unit(
 );
 
     // Opcodes for different operations
-    localparam ADD_OP   = 4'b0000;
-    localparam SUB_OP   = 4'b0001;
-    localparam MUL_OP   = 4'b0010;
-    localparam LD_OP    = 4'b0011;
-    localparam ST_OP    = 4'b0100;
-    localparam CMP_OP   = 4'b0101;
-    localparam MOV_OP   = 4'b0110;
-    localparam OR_OP    = 4'b0111;
-    localparam AND_OP   = 4'b1000;
-    localparam LSL_OP   = 4'b1010;
-    localparam LSR_OP   = 4'b1011;
-    localparam NOT_OP   = 4'b1001;
-    localparam BEQ_OP   = 4'b1101;
-    localparam BGT_OP   = 4'b1110;
-    localparam WB_OP    = 4'b1111;
-    localparam UBRANCH_OP = 4'b1100;
+    localparam NOP_OP      = 4'b0000;
+    localparam ADD_OP      = 4'b0001;
+    localparam SUB_OP      = 4'b0010;
+    localparam MUL_OP      = 4'b0011;
+    localparam LD_OP       = 4'b0100;
+    localparam ST_OP       = 4'b0101;
+    localparam CMP_OP      = 4'b0110;
+    localparam MOV_OP      = 4'b0111;
+    localparam OR_OP       = 4'b1000;
+    localparam AND_OP      = 4'b1001;
+    localparam NOT_OP      = 4'b1010;
+    localparam LSL_OP      = 4'b1011;
+    localparam UBRANCH_OP  = 4'b1100; // JUMP
+    localparam SRL_OP      = 4'b1101;
+    localparam BEQ_OP      = 4'b1110;
+    localparam BGT_OP      = 4'b1111;
 
     always @(posedge clk or posedge reset) begin
         if (reset) begin

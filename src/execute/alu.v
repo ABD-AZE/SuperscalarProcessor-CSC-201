@@ -64,8 +64,9 @@ module alu(
     reg islsl_reg;
     reg islsr_reg;
     reg isimmediate_reg;
-    reg op1_reg;
-    reg op2_reg;
+    reg [15:0]op1_reg;
+    reg [15:0]op2_reg;
+    reg [4:0]immx_reg;
     reg [15:0] result;
     initial begin
         $readmemh("registers.hex", reg_file);
@@ -115,6 +116,19 @@ module alu(
                 result <= 16'b0;
                 reg_file[7] = 16'h0;
             end
+            file = $fopen("registers.hex", "w");
+            if (file) begin
+                $display("Writing modified data...");
+                // Write each modified memory value to the new file
+                for (i = 0; i < 8; i = i + 1) begin
+                    $fwrite(file, "%h\n", reg_file[i]);  // Write as hexadecimal
+                    $display("Data written to register file successfully. %h",reg_file[i]);
+                end
+                $fclose(file);  // Close the file
+                $display("Data written to register file successfully.");
+            end else begin
+                $display("Error: Could not open file for writing.");
+            end
         end else if (ismov_reg) begin
             result <= B;
         end else if (isor_reg) begin
@@ -147,21 +161,4 @@ module alu(
         op2_reg <= op2;     
     end
     assign aluresult = result;
-    always @(*) begin
-        if (iscmp) begin
-            file = $fopen("registers.hex", "w");
-            if (file) begin
-                $display("Writing modified data...");
-                // Write each modified memory value to the new file
-                for (i = 0; i < 8; i = i + 1) begin
-                    $fwrite(file, "%h\n", reg_file[i]);  // Write as hexadecimal
-                    $display("Data written to register file successfully. %h",reg_file[i]);
-                end
-                $fclose(file);  // Close the file
-                $display("Data written to register file successfully.");
-            end else begin
-                $display("Error: Could not open file for writing.");
-            end
-        end
-    end
 endmodule

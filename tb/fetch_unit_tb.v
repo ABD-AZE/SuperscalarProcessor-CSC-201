@@ -6,9 +6,10 @@ module tb_fetch_unit;
     reg stall;
     reg is_branch_taken;
     reg [15:0] branch_target;
+    reg issingleinstr;
     wire [15:0] instr1;
     wire [15:0] instr2;
-    reg [15:0] pc;
+
     // Instantiate the fetch unit
     fetch_unit uut (
         .clk(clk),
@@ -16,6 +17,7 @@ module tb_fetch_unit;
         .stall(stall),
         .is_branch_taken(is_branch_taken),
         .branch_target(branch_target),
+        .issingleinstr(issingleinstr),
         .instr1(instr1),
         .instr2(instr2)
     );
@@ -23,22 +25,25 @@ module tb_fetch_unit;
     // Initialize all signals
     initial begin
         $dumpfile("fetch_unit.vcd");
-        $dumpvars(0,tb_fetch_unit);
+        $dumpvars(0, tb_fetch_unit);
         clk = 0;
         reset = 0;
         stall = 0;
         is_branch_taken = 0;
         branch_target = 0;
+        issingleinstr = 0;
 
         // Apply reset
         #5 reset = 1;
         #10 reset = 0;
+
         // Run test scenarios
         test_no_branch;
-        // #10 test_stall;
+        #10 test_stall;
         #10 test_no_branch;
         #10 test_with_branch;
-        #10 test_no_branch;
+        #10 test_single_instruction;
+        
         #50 $finish;
     end
 
@@ -54,10 +59,9 @@ module tb_fetch_unit;
             is_branch_taken = 0;
             branch_target = 16'h0;
             stall = 0;
-
-            // Observe the outputs
-            // #20; // Wait for a few clock cycles
-            $display("instr1: %h, instr2: %h", instr1, instr2);
+            issingleinstr = 0;
+            #20; // Wait for a few clock cycles
+            $display("Time: %0t | Normal fetch - instr1: %h, instr2: %h", $time, instr1, instr2);
         end
     endtask
 
@@ -66,12 +70,13 @@ module tb_fetch_unit;
         begin
             // Test fetching with a branch taken
             is_branch_taken = 1;
-            branch_target = 16'h5; // Set branch target to a new address
+            branch_target = 16'h1; // Set branch target to a new address
             stall = 0;
-
-            // Observe the outputs after branch handling
-            // #20; // Wait for a few clock cycles
-            $display("After branch, instr1: %h, instr2: %h", instr1, instr2);
+            issingleinstr = 0;
+            #10; // Wait for a cycle to let branch take effect
+            is_branch_taken = 0; // Deassert branch after one cycle
+            #20; // Wait for a few clock cycles
+            $display("Time: %0t | After branch - instr1: %h, instr2: %h", $time, instr1, instr2);
         end
     endtask
 
@@ -82,11 +87,24 @@ module tb_fetch_unit;
             stall = 1;
             is_branch_taken = 0;
             branch_target = 16'h0;
-            reset = 0;
-
-            // No new fetch should occur due to stall
+            issingleinstr = 0;
             #10; // Wait for a few clock cycles
-            $display("Stalled, instr1: %h, instr2: %h", instr1, instr2);
+            $display("Time: %0t | Stalled fetch - instr1: %h, instr2: %h", $time, instr1, instr2);
+            stall = 0; // Deassert stall to resume normal fetching
+        end
+    endtask
+
+    // Test Case 4: Single Instruction Mode
+    task test_single_instruction;
+        begin
+            // Test fetching only one instruction per cycle
+            issingleinstr = 1;
+            is_branch_taken = 0;
+            branch_target = 16'h0;
+            stall = 0;
+            #10; // Wait for a few clock cycles
+            $display("Time: %0t | Single instruction fetch - instr1: %h, instr2: %h", $time, instr1, instr2);
+            issingleinstr = 0; // Reset to normal fetch mode
         end
     endtask
 

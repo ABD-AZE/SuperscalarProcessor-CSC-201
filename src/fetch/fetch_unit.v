@@ -22,7 +22,6 @@ module fetch_unit (
         instr2_reg <=  16'h0;
 
     end
-    reg [15:0] instr1_reg, instr2_reg;                // Instructions for decode
     // PC update logic with branch handling and buffer control
     always @(posedge clk or posedge reset) begin
         if (reset) begin

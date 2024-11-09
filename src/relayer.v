@@ -34,8 +34,6 @@ module relayer_unit(
     reg [15:0] buffer2 [0:2];
     reg [15:0] instr1_reg;
     reg [15:0] instr2_reg;
-    integer i=0;
-
-
+    
 
 endmodule 

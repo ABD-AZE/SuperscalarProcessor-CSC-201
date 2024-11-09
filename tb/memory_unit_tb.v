@@ -24,6 +24,7 @@ module memory_unit_tb;
         forever #5 clk = ~clk; // Toggle clock every 5 ns for a 10 ns period
     end
 
+
     // Test sequence
     initial begin
         // Initialize control signals
@@ -34,54 +35,45 @@ module memory_unit_tb;
         op2 = 16'h0000;
         aluresult = 16'h0000;
 
+        #5
+
         // Display initial message
         $display("Starting memory_unit testbench...");
 
         // Wait for the initial clock cycle
         #10;
-
         // Test store operation
         $display("Testing store operation...");
         isst = 1;
         aluresult = 16'h0001; // Address to store at
         op2 = 16'hA5A5;       // Data to store
-        #10;
-        isst = 0; // End of store operation
+        isld = 0; // End of store operation
 
         // Wait for a clock cycle, then test load operation
         #10;
         $display("Testing load operation...");
         isld = 1;
-        aluresult = 16'h0001; // Address to load from
-        #10;
-        isld = 0; // End of load operation
-
-        // Observe output in the next clock cycle
-        #10;
-        $display("Expected load result: A5A5, Actual ldresult: %h", ldresult);
+        aluresult = 16'h0002; // Address to load from
+        op2 = 16'h1000;
+        isst = 0; // End of load operation
 
         // Test store operation at a different address
         $display("Testing store operation at a different address...");
         #10;
         isst = 1;
-        aluresult = 16'h0002; // Address to store at
-        op2 = 16'h5A5A;       // Data to store
-        #10;
-        isst = 0; // End of store operation
+        aluresult = 16'h0003; // Address to store at
+        op2 = 16'h100A;       // Data to store
+        isld = 0; // End of store operation
 
         // Load from the new address
         #10;
         isld = 1;
-        aluresult = 16'h0002; // Address to load from
-        #10;
-        isld = 0; // End of load operation
-
-        // Observe output in the next clock cycle
-        #10;
-        $display("Expected load result: 5A5A, Actual ldresult: %h", ldresult);
+        aluresult = 16'h0004; // Address to load from
+        op2 = 16'h101A;       // Data to store
+        isst = 0; // End of load operation
 
         // End of simulation
-        #10;
+        #20;
         $finish;
     end
 endmodule

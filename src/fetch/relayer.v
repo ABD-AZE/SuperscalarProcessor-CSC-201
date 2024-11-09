@@ -98,7 +98,7 @@ module relayer_unit(
                 instr2_out = nop;
             end
         end
-        for(i=1;i<3;i++) begin
+        for(i=1;i<3;i=i+1) begin
             buffer1[i] = buffer1[i-1];
             buffer2[i] = buffer2[i-1];
         end

@@ -48,7 +48,7 @@ module decode_unit (
             imm_next <= 5'h00;
             imm_flag_next <= 0;
             op1_next <= 16'h0;
-            op2_next <= registers[rs2];
+            op2_next <= 16'h0;
             branch_target_next <= 16'h0;
         end else if (!stall) begin
             // Decode instruction and load next-cycle values into pipeline registers

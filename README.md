@@ -112,16 +112,16 @@ Opcode (4 bits)	|      I (1 bit)  	|      rd (3 bits)	|    rs1 (3 bits)      |  
 - **Example**: `NOT R1, R2`
 - **Binary**: `1010_0_001_010_00000 → C 0 1 2 0`
 
-## 12. SLL rd, rs1, imm
+## 12. LSL rd, rs1, imm
 - **Opcode**: `1011`
 - **I**: 1
-- **Example**: `SLL R3, R4, 3`
+- **Example**: `LSL R3, R4, 3`
 - **Binary**: `1011_1_011_100_00011 → D 1 3 4 3`
 
-## 13. SRL rd, rs1, imm
+## 13. LSR rd, rs1, imm
 - **Opcode**: `1101`
 - **I**: 1
-- **Example**: `SRL R3, R4, 2`
+- **Example**: `LSR R3, R4, 2`
 - **Binary**: `1101_1_011_100_00010 → D 1 3 4 2`
 
 ## 14. BEQ rs1, rs2, offset

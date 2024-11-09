@@ -51,30 +51,60 @@ module alu(
     assign isnot = alusignals[9];
     assign islsl = alusignals[10];
     assign islsr = alusignals[11];
-
+    reg isadd_reg;
+    reg isld_reg;
+    reg isst_reg;
+    reg issub_reg;
+    reg ismul_reg;
+    reg iscmp_reg;
+    reg ismov_reg;
+    reg isor_reg;
+    reg isand_reg;
+    reg isnot_reg;
+    reg islsl_reg;
+    reg islsr_reg;
+    reg isimmediate_reg;
+    reg op1_reg;
+    reg op2_reg;
     reg [15:0] result;
     initial begin
         $readmemh("registers.hex", reg_file);
+        isadd_reg = 1'b0;
+        isld_reg = 1'b0;
+        isst_reg = 1'b0;
+        issub_reg = 1'b0;
+        ismul_reg = 1'b0;
+        iscmp_reg = 1'b0;
+        ismov_reg = 1'b0;
+        isor_reg = 1'b0;
+        isand_reg = 1'b0;
+        isnot_reg = 1'b0;
+        islsl_reg = 1'b0;
+        islsr_reg = 1'b0;
+        isimmediate_reg = 1'b0;
+        op1_reg = 16'b0;
+        op2_reg = 16'b0;
+        immx_reg = 5'b0;
     end
     always @(posedge clk) begin
-        if (isimmediate) begin
-            A <= op1;
-            B <= immx;
+        if (isimmediate_reg) begin
+            A = op1;
+            B = immx;
         end else begin
-            A <= op1;
-            B <= op2;
+            A = op1;
+            B = op2;
         end
-        if (isadd) begin
+        if (isadd_reg) begin
             result <= A + B;
-        end else if (isld) begin
+        end else if (isld_reg) begin
             result <= A + B;
-        end else if (isst) begin
+        end else if (isst_reg) begin
             result <= A + B;
-        end else if (issub) begin
+        end else if (issub_reg) begin
             result <= A - B;
-        end else if (ismul) begin
+        end else if (ismul_reg) begin
             result <= A * B;
-        end else if (iscmp) begin // 1 for equal, 2 for greater than  , 0 for less than 
+        end else if (iscmp_reg) begin // 1 for equal, 2 for greater than  , 0 for less than 
             if (A == B) begin
                 result <= 16'b1;
                 reg_file[7] = 16'b1;
@@ -85,21 +115,36 @@ module alu(
                 result <= 16'b0;
                 reg_file[7] = 16'h0;
             end
-        end else if (ismov) begin
+        end else if (ismov_reg) begin
             result <= B;
-        end else if (isor) begin
+        end else if (isor_reg) begin
             result <= A | B;
-        end else if (isand) begin
+        end else if (isand_reg) begin
             result <= A & B;
-        end else if (isnot) begin
+        end else if (isnot_reg) begin
             result <= ~A;
-        end else if (islsl) begin
+        end else if (islsl_reg) begin
             result <= A << B;
-        end else if (islsr) begin
+        end else if (islsr_reg) begin
             result <= A >> B;
         end else begin
             result <= 16'b0;
         end
+        isadd_reg <= isadd;
+        isld_reg <= isld;
+        isst_reg <= isst;
+        issub_reg <= issub;
+        ismul_reg <= ismul;
+        iscmp_reg <= iscmp;
+        ismov_reg <= ismov;
+        isor_reg <= isor;
+        isand_reg <= isand;
+        isnot_reg <= isnot;
+        islsl_reg <= islsl;
+        islsr_reg <= islsr;
+        isimmediate_reg <= isimmediate;
+        op1_reg <= op1;
+        op2_reg <= op2;     
     end
     assign aluresult = result;
     always @(*) begin

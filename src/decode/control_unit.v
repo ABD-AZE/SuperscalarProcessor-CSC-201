@@ -22,7 +22,6 @@ module control_unit(
 );
 
     // Opcodes for different operations
-    localparam NOP_OP      = 4'b0000;
     localparam ADD_OP      = 4'b0001;
     localparam SUB_OP      = 4'b0010;
     localparam MUL_OP      = 4'b0011;

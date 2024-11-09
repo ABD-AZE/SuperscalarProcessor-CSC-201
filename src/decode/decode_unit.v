@@ -4,86 +4,87 @@ module decode_unit (
     input wire stall,                               // Stall signal
     input wire is_branch_taken,                     // Branch taken signal
     input wire [15:0] instr,                        // 16-bit instruction
-    output reg [4:0] imm,                           // 5-bit immediate value
-    output reg [3:0] opcode,                        // 4-bit Opcode
-    output reg [15:0] branch_target,                // Calculated branch target
-    output reg [15:0] op1, op2,                     // Operand values
-    output reg imm_flag                             // Immediate flag
+    output wire [4:0] imm,                          // 5-bit immediate value
+    output wire [3:0] opcode,                       // 4-bit Opcode
+    output wire [15:0] branch_target,               // Calculated branch target
+    output wire [15:0] op1, op2,                    // Operand values
+    output wire imm_flag                            // Immediate flag
 );
-    reg [15:0] reg_file [0:7];                      // Register file memory (16 registers)
+
+    // Internal registers for decoding and pipeline
+    reg [4:0] imm_reg;
+    reg [3:0] opcode_reg;
+    reg [15:0] branch_target_reg, op1_reg, op2_reg;
+    reg imm_flag_reg;
+
+    // Register file
+    reg [2:0] rd, rs1, rs2;                         // Register fields
+    reg [15:0] registers [0:7];                     // Register file memory (16 registers)
+
+    // Pipeline registers for next cycle values
+    reg [4:0] imm_next;
+    reg [3:0] opcode_next;
+    reg [15:0] branch_target_next, op1_next, op2_next;
+    reg imm_flag_next;
+
     // Load the hex file at the start
     initial begin
-        $readmemh("reg_file.hex", reg_file);         // Load values from hex file
-    end
-    wire imm_flag_w;
-    wire [4:0] imm_w;
-    wire [3:0] opcode_w;
-    wire [15:0] branch_target_w;
-    wire [15:0] op1_w;
-    wire [15:0] op2_w;
-    wire [2:0] rs1_w;
-    wire [2:0] rs2_w;
-    wire [2:0] rd_w;
-    assign rs1_w = instr[7:5];
-    assign rs2_w = instr[4:2];
-    assign rd_w  = instr[10:8];
-    assign imm_w = instr[4:0];
-    assign opcode_w = instr[15:12];
-    assign branch_target_w = {{5'b0, instr[10:0]}};
-    assign op1_w = reg_file[rs1_w];
-    assign op2_w = reg_file[rs2_w];
-    assign imm_flag_w = instr[11];
-    // Internal registers
-    reg [15:0] value_rs1;
-    reg [15:0] value_rs2;                 // Registers to store rs1 and rs2 values
-    // Decode logic triggered on the positive edge of the clock or reset
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
-            // Reset all outputs
-            opcode <= 4'h0;                         // NOP instruction
-            imm <= 5'h0;
-            op1 <= 16'h0;
-            op2 <= 16'h0;
-            branch_target <= 16'h0;
-            imm_flag <= 0;
-        end else if (is_branch_taken) begin
-            // Handle flush (invalidate current instruction)
-            opcode <= 4'h0;                         // NOP
-            rd <= 3'h0;
-            rs1 <= 3'h0;
-            rs2 <= 3'h0;
-            imm <= 5'h00;
-            imm_flag <= 0;
-            value_rs1 <= 16'h0;
-            value_rs2 <= reg_file[rs2];
-            branch_target <= 16'h0;
-        end else if (!stall) begin
-            // Decode the instruction when not stalled
-            opcode <= instr[15:12];                 // Extract 4-bit opcode
-            imm_flag <= instr[11];                  // Extract immediate flag (bit 11)
-            rd <= instr[10:8];                      // Extract rd (3-bit)
-            rs1 <= instr[7:5];                      // Extract rs1 (3-bit)
-            imm <= instr[4:0];                  // Extract 5-bit immediate
-            rs2 <= instr[4:2];
-            
-            if (instr[11]) begin
-                // If the instruction uses immediate
-                value_rs1 <= reg_file[rs1];         // Load rs1 value from register file
-            end else begin
-                // If the instruction uses rs2
-                value_rs1 <= reg_file[rs1];         // Load rs1 value from register file
-                value_rs2 <= reg_file[rs2];         // Load rs2 value from register file
-            end
-            branch_target <= {{5'b0, instr[10:0]}};  // Extend and shift
-        end
-        if (instr[11] && !is_branch_taken) begin
-            op1 <= value_rs1;             // Operand 1 from rs1
-            op2 <= {10'b0, imm};          // Operand 2 from immediate value
-        end else begin
-            op1 <= value_rs1;             // Operand 1 from rs1
-            op2 <= value_rs2;             // Operand 2 from rs2
-        end
+        $readmemh("registers.hex", registers);      // Load values from hex file
     end
 
-    // Operand assignment
+    // Decode logic - computes values in the current cycle but stores them in the pipeline registers
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            // Reset all pipeline registers
+            opcode_next <= 4'h0;
+            imm_next <= 5'h00;
+            branch_target_next <= 16'h0;
+            op1_next <= 16'h0;
+            op2_next <= 16'h0;
+            imm_flag_next <= 0;
+        end else if (is_branch_taken) begin
+            // Handle branch flush; outputs reset to NOP
+            opcode_next <= 4'h0;
+            imm_next <= 5'h00;
+            imm_flag_next <= 0;
+            op1_next <= 16'h0;
+            op2_next <= registers[rs2];
+            branch_target_next <= 16'h0;
+        end else if (!stall) begin
+            // Decode instruction and load next-cycle values into pipeline registers
+            opcode_next <= instr[15:12];
+            imm_flag_next <= instr[11];
+            rd = instr[10:8];
+            rs1 = instr[7:5];
+            imm_next <= instr[4:0];
+            rs2 = instr[4:2];
+
+            if (instr[11]) begin
+                op1_next <= registers[rs1];
+                op2_next <= {11'b0, instr[4:0]};
+            end else begin
+                op1_next <= registers[rs1];
+                op2_next <= registers[rs2];
+            end
+
+            branch_target_next <= {5'b0, instr[10:0]};
+        end
+
+        // Update internal pipeline registers with next-cycle values
+        opcode_reg <= opcode_next;
+        imm_reg <= imm_next;
+        branch_target_reg <= branch_target_next;
+        op1_reg <= op1_next;
+        op2_reg <= op2_next;
+        imm_flag_reg <= imm_flag_next;
+    end
+
+    // Continuous assignments to output wires
+    assign opcode = opcode_reg;
+    assign imm = imm_reg;
+    assign branch_target = branch_target_reg;
+    assign op1 = op1_reg;
+    assign op2 = op2_reg;
+    assign imm_flag = imm_flag_reg;
+
 endmodule

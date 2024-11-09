@@ -24,7 +24,7 @@ Memory Addressing: Word-addressable.<br>
 The instruction format is divided as follows: <br>
 Opcode (4 bits)	|      I (1 bit)  	|      rd (3 bits)	|    rs1 (3 bits)      |     	rs2/imm (5 bits)
 
-# Completing the ISA
+# ISA
 # 16 Instructions for the Custom Processor
 
 ## 1. NOP

@@ -20,7 +20,7 @@ module decode_unit (
     // Register file
     reg [2:0] rd, rs1, rs2;                         // Register fields
     reg [15:0] registers [0:7];                     // Register file memory (16 registers)
-
+    
     // Pipeline registers for next cycle values
     reg [4:0] imm_next;
     reg [3:0] opcode_next;

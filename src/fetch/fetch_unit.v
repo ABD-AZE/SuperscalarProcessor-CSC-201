@@ -59,8 +59,8 @@ module fetch_unit (
             instr1_reg <= buffer[0];
             instr2_reg <= buffer[1];
         end else begin
-            instr1 <= 16'h0;
-            instr2 <= 16'h0;
+            instr1_reg <= 16'h0;
+            instr2_reg <= 16'h0;
         end
     end
     assign instr1 = instr1_reg;

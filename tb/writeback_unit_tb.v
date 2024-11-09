@@ -38,7 +38,7 @@ module writeback_unit_tb;
         aluresult = 16'h0000;
 
         // Initialize the file for checking the register writeback results
-        $dumpfile("writeback_unit_tb.vcd");
+        $dumpfile("writeback_unit.vcd");
         $dumpvars(0, writeback_unit_tb);
 
         // Test 1: Write to register with ALU result
@@ -57,7 +57,7 @@ module writeback_unit_tb;
         ldresult = 16'h1234;  // Load result to be written
         #10;
 
-        // Test 3: Ensure that no write occurs without `iswb` being set
+        // Test 3: Ensure that no write occurs without iswb being set
         #10;
         iswb = 0; // No writeback
         rd = 3'b011;  // Register 3

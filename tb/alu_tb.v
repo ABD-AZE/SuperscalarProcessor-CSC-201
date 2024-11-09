@@ -102,7 +102,7 @@ module alu_tb();
         $display("LSR: Result = %h", aluresult);
         
 
-        #50;
+        #10;
         // End of test
         $finish;
     end

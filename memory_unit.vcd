@@ -1,0 +1,121 @@
+$date
+	Sat Nov  9 21:54:40 2024
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module memory_unit_tb $end
+$var wire 16 ! ldresult [15:0] $end
+$var reg 16 " aluresult [15:0] $end
+$var reg 1 # clk $end
+$var reg 1 $ isld $end
+$var reg 1 % isst $end
+$var reg 16 & op2 [15:0] $end
+$scope module dut $end
+$var wire 16 ' aluresult [15:0] $end
+$var wire 1 # clk $end
+$var wire 1 $ isld $end
+$var wire 1 % isst $end
+$var wire 16 ( ldresult [15:0] $end
+$var wire 16 ) op2 [15:0] $end
+$var reg 16 * ld [15:0] $end
+$var reg 16 + ld_reg [15:0] $end
+$var integer 32 , file [31:0] $end
+$var integer 32 - i [31:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+bx -
+bx ,
+b0 +
+b0 *
+b0 )
+b0 (
+b0 '
+b0 &
+0%
+0$
+0#
+b0 "
+b0 !
+$end
+#5
+1#
+#10
+0#
+b1010010110100101 &
+b1010010110100101 )
+b1 "
+b1 '
+1%
+#15
+b100000 -
+b10000000000000000000000000000011 ,
+1#
+#20
+0#
+0%
+#25
+1#
+#30
+0#
+1$
+#35
+b1010010110100101 +
+1#
+#40
+0#
+0$
+#45
+1#
+b1010010110100101 !
+b1010010110100101 (
+b1010010110100101 *
+#50
+0#
+#55
+1#
+#60
+0#
+b101101001011010 &
+b101101001011010 )
+b10 "
+b10 '
+1%
+#65
+b0 +
+b100000 -
+1#
+#70
+0#
+0%
+#75
+1#
+b0 !
+b0 (
+b0 *
+#80
+0#
+1$
+#85
+b101101001011010 +
+1#
+#90
+0#
+0$
+#95
+1#
+b101101001011010 !
+b101101001011010 (
+b101101001011010 *
+#100
+0#
+#105
+1#
+#110
+0#

@@ -37,7 +37,6 @@ Opcode (4 bits)	|      I (1 bit)  	|      rd (3 bits)	|    rs1 (3 bits)      |  
 - **I**: 0 (register-register)
 - **Example**: `ADD R1, R2, R3`
 - **Binary**: `0001_0_001_010_00011 → 1 0 1 2 3`
-
 - **I**: 1 (register-immediate)
 - **Example**: `ADD R1, R2, 5`
 - **Binary**: `0001_1_001_010_00101 → 1 1 1 2 5`

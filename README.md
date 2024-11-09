@@ -27,117 +27,119 @@ Opcode (4 bits)	|      I (1 bit)  	|      rd (3 bits)	|    rs1 (3 bits)      |  
 # Completing the ISA
 # 16 Instructions for the Custom Processor
 
-1. *ADD rd, rs1, rs2* (Arithmetic add, register-register or register-immediate)
-   - *Opcode*: 0000
-   - *I*: 0 (register-register)
-   - *Example*: ADD R1, R2, R3 (add R2 and R3, store in R1)
-   - *Binary*: 0000_0_001_010_00011 → 1 0 1 2 3
-   
-   - *I*: 1 (register-immediate)
-   - *Example*: ADD R1, R2, 5 (add R2 and immediate 5, store in R1)
-   - *Binary*: 0000_1_001_010_00101 → 1 1 1 2 5
+## 1. NOP
+- **Opcode**: `0000`
+- **Example**: `NOP` (does nothing)
+- **Binary**: `0000_0_000_000_00000 → 0 0 0 0 0`
 
-2. *SUB rd, rs1, rs2* (Arithmetic subtract, register-register or register-immediate)
-   - *Opcode*: 0001
-   - *I*: 0 (register-register)
-   - *Example*: SUB R4, R5, R6 (subtract R6 from R5, store in R4)
-   - *Binary*: 0001_0_100_101_00110 → 2 0 4 5 6
-   
-   - *I*: 1 (register-immediate)
-   - *Example*: SUB R4, R5, 7 (subtract immediate 7 from R5, store in R4)
-   - *Binary*: 0001_1_100_101_00111 → 2 1 4 5 7
+## 2. ADD rd, rs1, rs2
+- **Opcode**: `0001`
+- **I**: 0 (register-register)
+- **Example**: `ADD R1, R2, R3`
+- **Binary**: `0001_0_001_010_00011 → 1 0 1 2 3`
 
-3. *MUL rd, rs1, rs2* (Arithmetic multiply, register-register or register-immediate)
-   - *Opcode*: 0010
-   - *I*: 0 (register-register)
-   - *Example*: MUL R7, R0, R1 (multiply R0 and R1, store in R7)
-   - *Binary*: 0010_0_111_000_00001 → 3 0 7 0 1
-   
-   - *I*: 1 (register-immediate)
-   - *Example*: MUL R7, R0, 3 (multiply R0 by immediate 3, store in R7)
-   - *Binary*: 0010_1_111_000_00011 → 3 1 7 0 3
+- **I**: 1 (register-immediate)
+- **Example**: `ADD R1, R2, 5`
+- **Binary**: `0001_1_001_010_00101 → 1 1 1 2 5`
 
-4. *LOAD rd, [rs1 + imm]* (Load from memory with immediate offset)
-   - *Opcode*: 0011
-   - *I*: 1 (Always immediate for LOAD)
-   - *Example*: LOAD R2, [R3 + 5] (load value from memory at R3 + 5, store in R2)
-   - *Binary*: 0011_1_010_011_00101 → 4 1 2 3 5
+## 3. SUB rd, rs1, rs2
+- **Opcode**: `0010`
+- **I**: 0 (register-register)
+- **Example**: `SUB R4, R5, R6`
+- **Binary**: `0010_0_100_101_00110 → 2 0 4 5 6`
 
-5. *STORE rs1, [rs2 + imm]* (Store to memory with immediate offset)
-   - *Opcode*: 0100
-   - *I*: 1 (Always immediate for STORE)
-   - *Example*: STORE R5, [R6 + 10] (store R5 to memory at R6 + 10)
-   - *Binary*: 0100_1_101_110_01010 → 5 1 5 6 A
+- **I**: 1 (register-immediate)
+- **Example**: `SUB R4, R5, 7`
+- **Binary**: `0010_1_100_101_00111 → 2 1 4 5 7`
 
-6. *MOV rd, rs1* (Move, register-register)
-   - *Opcode*: 0110
-   - *I*: 0 (Always register-register for MOV)
-   - *Example*: MOV R2, R3 (move R3 into R2)
-   - *Binary*: 0110_0_010_011_00000 → 6 0 2 3 0
+## 4. MUL rd, rs1, rs2
+- **Opcode**: `0011`
+- **I**: 0 (register-register)
+- **Example**: `MUL R7, R0, R1`
+- **Binary**: `0011_0_111_000_00001 → 3 0 7 0 1`
 
-7. *AND rd, rs1, rs2* (Logical AND, register-register or register-immediate)
-   - *Opcode*: 1000
-   - *I*: 0 (register-register)
-   - *Example*: AND R2, R3, R1 (bitwise AND between R3 and R1, store in R2)
-   - *Binary*: 1000_0_010_011_00001 → 7 0 2 3 1
-   
-   - *I*: 1 (register-immediate)
-   - *Example*: AND R2, R3, 15 (bitwise AND between R3 and immediate 15, store in R2)
-   - *Binary*: 0111_1_010_011_01111 → 7 1 2 3 F
+- **I**: 1 (register-immediate)
+- **Example**: `MUL R7, R0, 3`
+- **Binary**: `0011_1_111_000_00011 → 3 1 7 0 3`
 
-8. *OR rd, rs1, rs2* (Logical OR, register-register or register-immediate)
-   - *Opcode*: 0111
-   - *I*: 0 (register-register)
-   - *Example*: OR R5, R6, R7 (bitwise OR between R6 and R7, store in R5)
-   - *Binary*: 0111_0_101_110_00111 → 8 0 5 6 7
-   
-   - *I*: 1 (register-immediate)
-   - *Example*: OR R5, R6, 7 (bitwise OR between R6 and immediate 7, store in R5)
-   - *Binary*: 0111_1_101_110_00111 → 8 1 5 6 7
+## 5. LOAD rd, [rs1 + imm]
+- **Opcode**: `0100`
+- **I**: 1
+- **Example**: `LOAD R2, [R3 + 5]`
+- **Binary**: `0100_1_010_011_00101 → 4 1 2 3 5`
 
-9. *BGT rs1, rs2, offset* (Branch if Greater Than)
-   - *Opcode*: 1110
-   - *I*: 0
-   - *Example*: BGT R1, R2, -3 (if R1 > R2, branch to PC + offset -3)
-   - *Binary*: 1110_0_001_010_11101 → 9 0 1 2 1D
+## 6. STORE rs1, [rs2 + imm]
+- **Opcode**: `0101`
+- **I**: 1
+- **Example**: `STORE R5, [R6 + 10]`
+- **Binary**: `0101_1_101_110_01010 → 5 1 5 6 A`
 
-10. *BEQ rs1, rs2, offset* (Branch if Equal)
-    - *Opcode*: 1101
-    - *I*: 0
-    - *Example*: BEQ R4, R5, 8 (if R4 equals R5, branch to PC + offset 8)
-    - *Binary*: 1101_0_100_101_01000 → A 0 4 5 8
+## 7. CMP rs1, rs2
+- **Opcode**: `0110`
+- **I**: 0
+- **Example**: `CMP R1, R2`
+- **Binary**: `0110_0_001_010_00000 → B 0 1 2 0`
 
-11. *JUMP target*
-    - *Opcode*: 1100
-    - *I*: 1 (Always immediate)
-    - *Example*: JUMP 15 (Jump to address 15)
-    - *Binary*: 1100_1_000_000_01111 → B 1 0 0 F
+## 8. MOV rd, rs1
+- **Opcode**: `0111`
+- **I**: 0
+- **Example**: `MOV R2, R3`
+- **Binary**: `0111_0_010_011_00000 → 7 0 2 3 0`
 
-12. *NOT rd, rs1* (Logical NOT, register-register)
-    - *Opcode*: 1001
-    - *I*: 0
-    - *Example*: NOT R1, R2 (bitwise NOT of R2, store the result in R1)
-    - *Binary*: 1001_0_001_010_00000 → C 0 1 2 0
+## 9. OR rd, rs1, rs2
+- **Opcode**: `1000`
+- **I**: 0 (register-register)
+- **Example**: `OR R5, R6, R7`
+- **Binary**: `1000_0_101_110_00111 → 8 0 5 6 7`
 
-13. *SRL rd, rs1, imm* (Logical Shift Right, immediate)
-    - *Opcode*: 1011
-    - *I*: 1
-    - *Example*: SRL R3, R4, 2 (logical shift R4 right by 2 bits, store in R3)
-    - *Binary*: 1011_1_011_100_00010 → D 1 3 4 2
+- **I**: 1 (register-immediate)
+- **Example**: `OR R5, R6, 7`
+- **Binary**: `1000_1_101_110_00111 → 8 1 5 6 7`
 
-14. *SLL rd, rs1, imm* (Logical Shift Left, immediate)
-    - *Opcode*: 1010
-    - *I*: 1
-    - *Example*: SLL R3, R4, 3 (logical shift R4 left by 3 bits, store in R3)
-    - *Binary*: 1010_1_011_100_00011 → E 1 3 4 3
-15. *NOP* (No Operation)
-    - *Opcode*: 1111
-    - *I*: 0 (No operands required)
-    - *Example*: NOP (does nothing, used to fill delay slots or align instructions)
-    - *Binary*: 1111_0_000_000_00000 → F 0 0 0 0
-  
-16. *CMP rs1, rs2* (Compare registers)
-    - *Opcode*: 0101
-    - *I*: 0 (register-register comparison)
-    - *Example*: CMP R1, R2 (compares R1 and R2, sets flags)
-    - *Binary*: 0101_0_001_010_00000 → B 0 1 2 0
+## 10. AND rd, rs1, rs2
+- **Opcode**: `1001`
+- **I**: 0 (register-register)
+- **Example**: `AND R2, R3, R1`
+- **Binary**: `1001_0_010_011_00001 → 9 0 2 3 1`
+
+- **I**: 1 (register-immediate)
+- **Example**: `AND R2, R3, 15`
+- **Binary**: `1001_1_010_011_01111 → 9 1 2 3 F`
+
+## 11. NOT rd, rs1
+- **Opcode**: `1010`
+- **I**: 0
+- **Example**: `NOT R1, R2`
+- **Binary**: `1010_0_001_010_00000 → C 0 1 2 0`
+
+## 12. SLL rd, rs1, imm
+- **Opcode**: `1011`
+- **I**: 1
+- **Example**: `SLL R3, R4, 3`
+- **Binary**: `1011_1_011_100_00011 → D 1 3 4 3`
+
+## 13. SRL rd, rs1, imm
+- **Opcode**: `1101`
+- **I**: 1
+- **Example**: `SRL R3, R4, 2`
+- **Binary**: `1101_1_011_100_00010 → D 1 3 4 2`
+
+## 14. BEQ rs1, rs2, offset
+- **Opcode**: `1110`
+- **I**: 0
+- **Example**: `BEQ R4, R5, 8`
+- **Binary**: `1110_0_100_101_01000 → A 0 4 5 8`
+
+## 15. BGT rs1, rs2, offset
+- **Opcode**: `1111`
+- **I**: 0
+- **Example**: `BGT R1, R2, -3`
+- **Binary**: `1111_0_001_010_11101 → 9 0 1 2 1D`
+
+## 16. JUMP target
+- **Opcode**: `1100`
+- **I**: 1
+- **Example**: `JUMP 15`
+- **Binary**: `1100_1_000_000_01111 → B 1 0 0 F`
+
+---

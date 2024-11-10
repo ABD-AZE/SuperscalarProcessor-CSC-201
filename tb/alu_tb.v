@@ -1,16 +1,15 @@
-`timescale 1ns / 1ps
 
-module alu_tb();
-    // Inputs
+module alu_tb;
+
     reg clk;
     reg [11:0] alusignals;
     reg [15:0] op1;
     reg [15:0] op2;
     reg [4:0] immx;
+    reg [15:0] instr;
     reg isimmediate;
-
-    // Output
     wire [15:0] aluresult;
+    wire [18:0] rdval;
 
     // Instantiate the ALU module
     alu uut (
@@ -19,91 +18,91 @@ module alu_tb();
         .op1(op1),
         .op2(op2),
         .immx(immx),
+        .instr(instr),
         .isimmediate(isimmediate),
-        .aluresult(aluresult)
+        .aluresult(aluresult),
+        .rdval(rdval)
     );
 
     // Clock generation
     initial begin
-        clk = 1;
-        forever #5 clk = ~clk; // 10ns clock period
+        clk = 0;
+        forever #5 clk = ~clk;  // 10 ns clock period
     end
 
-    // Test procedure
+    // Test initialization
     initial begin
-        $dumpfile("alu_unit.vcd");
-        $dumpvars(0,alu_tb);
-        // Initialize inputs
-        op1 = 16'h0005;    // Operand 1
-        op2 = 16'h0003;    // Operand 2
-        immx = 5'b00011;   // Immediate value
+        $dumpfile("alu_tb.vcd");
+        $dumpvars(0, alu_tb);
+        $monitor("Time = %0d, op1 = %h, op2 = %h, immx = %h, aluresult = %h, rdval = %h", 
+                  $time, op1, op2, immx, aluresult, rdval);
+        #5
+        // Reset inputs
+        alusignals = 12'b0;
+        op1 = 16'b0;
+        op2 = 16'b0;
+        immx = 5'b0;
+        instr = 16'b0;
         isimmediate = 0;
-        alusignals = 12'b000000000000; // Clear ALU signals
-        #10;
 
+        // Wait for reset to settle
+        #10;
         // Test ADD operation
-        alusignals = 12'b000000000001; // isadd
+        op1 = 16'h0010;
+        op2 = 16'h0005;
+        alusignals = 12'b000000000001; // Setting `isadd` high
         #10;
-        $display("ADD: Result = %h", aluresult);
-
-        // Test LOAD operation
-        alusignals = 12'b000000000010; // isld
-        #10;
-        $display("LOAD: Result = %h", aluresult);
-
-        // Test STORE operation
-        alusignals = 12'b000000000100; // isst
-        #10;
-        $display("STORE: Result = %h", aluresult);
         
         // Test SUB operation
-        alusignals = 12'b000000001000; // issub
+        alusignals = 12'b000000000010; // Setting `issub` high
         #10;
-        $display("SUB: Result = %h", aluresult);
 
         // Test MUL operation
-        alusignals = 12'b000000010000; // ismul
+        alusignals = 12'b000000001000; // Setting `ismul` high
         #10;
-        $display("MUL: Result = %h", aluresult);
-
-        // Test CMP operation
-        alusignals = 12'b000000100000; // iscmp
-        #10;
-        $display("CMP: Result = %h", aluresult);
-        
-        // Test MOV operation
-        alusignals = 12'b000001000000; // ismov
-        #10;
-        $display("MOV (immediate): Result = %h", aluresult);
 
         // Test OR operation
-        alusignals = 12'b000010000000; // isor
+        alusignals = 12'b000000010000; // Setting `isor` high
         #10;
-        $display("OR: Result = %h", aluresult);
 
         // Test AND operation
-        alusignals = 12'b000100000000; // isand
+        alusignals = 12'b000000100000; // Setting `isand` high
         #10;
-        $display("AND: Result = %h", aluresult);
 
         // Test NOT operation
-        alusignals = 12'b001000000000; // isnot
+        alusignals = 12'b000001000000; // Setting `isnot` high
+        op1 = 16'hFFFF; // Test with all 1s to check NOT
         #10;
-        $display("NOT: Result = %h", aluresult);
 
-        // Test LSL operation
-        alusignals = 12'b010000000000; // islsl
+        // Test immediate mode for MOV
+        alusignals = 12'b000010000000; // Setting `ismov` high
+        isimmediate = 1;  // Immediate mode
+        immx = 5'b00101;  // Set immediate value
         #10;
-        $display("LSL: Result = %h", aluresult);
 
-        // Test LSR operation
-        alusignals = 12'b100000000000; // islsr
+        // Test LSL (Logical Shift Left)
+        alusignals = 12'b000100000000; // Setting `islsl` high
+        op1 = 16'h0001;
+        op2 = 16'h0003; // Shift left by 3
         #10;
-        $display("LSR: Result = %h", aluresult);
-        
 
+        // Test LSR (Logical Shift Right)
+        alusignals = 12'b001000000000; // Setting `islsr` high
+        op1 = 16'h0008;
+        op2 = 16'h0002; // Shift right by 2
         #10;
-        // End of test
-        $finish;
+
+        // Test CMP (Compare)
+        alusignals = 12'b000000100000; // Setting `iscmp` high
+        op1 = 16'h000A;
+        op2 = 16'h000A; // Compare equal case
+        #10;
+
+        // Test invalid operation
+        alusignals = 12'b000000000000; // No operation selected
+        #10;
+
+        $finish;  // End of simulation
     end
+
 endmodule

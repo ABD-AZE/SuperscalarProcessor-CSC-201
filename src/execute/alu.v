@@ -15,12 +15,14 @@ module alu(
         isnot
         islsl
         islsr
-    */
+    */  
     input wire [15:0] op1,
     input wire [15:0] op2,
     input wire [4:0] immx,
+    input wire [15:0] instr,
     input wire isimmediate,
-    output wire [15:0] aluresult
+    output wire [15:0] aluresult,
+    output wire [18:0] rdval
 );
     integer file;
     integer i;
@@ -68,6 +70,7 @@ module alu(
     reg [15:0]op2_reg;
     reg [4:0]immx_reg;
     reg [15:0] result;
+    reg [2:0] rd;
     initial begin
         $readmemh("registers.hex", reg_file);
         isadd_reg = 1'b0;
@@ -86,7 +89,10 @@ module alu(
         op1_reg = 16'b0;
         op2_reg = 16'b0;
         immx_reg = 5'b0;
+        rd = 3'b0;
+        instrw = 16'b0;
     end
+    reg [15:0] instrw;
     always @(posedge clk) begin
         if (isimmediate_reg) begin
             A = op1;
@@ -158,7 +164,10 @@ module alu(
         islsr_reg <= islsr;
         isimmediate_reg <= isimmediate;
         op1_reg <= op1;
-        op2_reg <= op2;     
+        op2_reg <= op2;    
+        instrw <= instr[10:8];
+        rd<=instrw;
     end
     assign aluresult = result;
+    assign rdval = {result,rd};
 endmodule

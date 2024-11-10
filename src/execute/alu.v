@@ -22,7 +22,7 @@ module alu(
     input wire [15:0] instr,
     input wire isimmediate,
     output wire [15:0] aluresult,
-    output wire [18:0] rdval
+    output wire [18:0] rdvalalu
 );
     integer file;
     integer i;
@@ -169,5 +169,5 @@ module alu(
         rd<=instrw;
     end
     assign aluresult = result;
-    assign rdval = {result,rd};
+    assign rdvalalu = {result,rd};
 endmodule

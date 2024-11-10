@@ -9,7 +9,7 @@ module alu_tb;
     reg [15:0] instr;
     reg isimmediate;
     wire [15:0] aluresult;
-    wire [18:0] rdval;
+    wire [18:0] rdvalalu;
 
     // Instantiate the ALU module
     alu uut (
@@ -21,7 +21,7 @@ module alu_tb;
         .instr(instr),
         .isimmediate(isimmediate),
         .aluresult(aluresult),
-        .rdval(rdval)
+        .rdvalalu(rdvalalu)
     );
 
     // Clock generation
@@ -34,8 +34,8 @@ module alu_tb;
     initial begin
         $dumpfile("alu_tb.vcd");
         $dumpvars(0, alu_tb);
-        $monitor("Time = %0d, op1 = %h, op2 = %h, immx = %h, aluresult = %h, rdval = %h", 
-                  $time, op1, op2, immx, aluresult, rdval);
+        $monitor("Time = %0d, op1 = %h, op2 = %h, immx = %h, aluresult = %h, rdvalalu = %h", 
+                  $time, op1, op2, immx, aluresult, rdvalalu);
         #5
         // Reset inputs
         alusignals = 12'b0;

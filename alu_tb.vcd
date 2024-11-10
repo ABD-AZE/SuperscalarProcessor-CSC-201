@@ -1,0 +1,366 @@
+$date
+	Sun Nov 10 06:32:18 2024
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module alu_tb $end
+$var wire 19 ! rdval [18:0] $end
+$var wire 16 " aluresult [15:0] $end
+$var reg 12 # alusignals [11:0] $end
+$var reg 1 $ clk $end
+$var reg 5 % immx [4:0] $end
+$var reg 16 & instr [15:0] $end
+$var reg 1 ' isimmediate $end
+$var reg 16 ( op1 [15:0] $end
+$var reg 16 ) op2 [15:0] $end
+$scope module uut $end
+$var wire 16 * aluresult [15:0] $end
+$var wire 12 + alusignals [11:0] $end
+$var wire 1 $ clk $end
+$var wire 5 , immx [4:0] $end
+$var wire 16 - instr [15:0] $end
+$var wire 1 ' isimmediate $end
+$var wire 16 . op1 [15:0] $end
+$var wire 16 / op2 [15:0] $end
+$var wire 19 0 rdval [18:0] $end
+$var wire 1 1 issub $end
+$var wire 1 2 isst $end
+$var wire 1 3 isor $end
+$var wire 1 4 isnot $end
+$var wire 1 5 ismul $end
+$var wire 1 6 ismov $end
+$var wire 1 7 islsr $end
+$var wire 1 8 islsl $end
+$var wire 1 9 isld $end
+$var wire 1 : iscmp $end
+$var wire 1 ; isand $end
+$var wire 1 < isadd $end
+$var reg 16 = A [15:0] $end
+$var reg 16 > B [15:0] $end
+$var reg 5 ? immx_reg [4:0] $end
+$var reg 16 @ instrw [15:0] $end
+$var reg 1 A isadd_reg $end
+$var reg 1 B isand_reg $end
+$var reg 1 C iscmp_reg $end
+$var reg 1 D isimmediate_reg $end
+$var reg 1 E isld_reg $end
+$var reg 1 F islsl_reg $end
+$var reg 1 G islsr_reg $end
+$var reg 1 H ismov_reg $end
+$var reg 1 I ismul_reg $end
+$var reg 1 J isnot_reg $end
+$var reg 1 K isor_reg $end
+$var reg 1 L isst_reg $end
+$var reg 1 M issub_reg $end
+$var reg 16 N op1_reg [15:0] $end
+$var reg 16 O op2_reg [15:0] $end
+$var reg 3 P rd [2:0] $end
+$var reg 16 Q result [15:0] $end
+$var integer 32 R file [31:0] $end
+$var integer 32 S i [31:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+bx S
+bx R
+bx Q
+b0 P
+b0 O
+b0 N
+0M
+0L
+0K
+0J
+0I
+0H
+0G
+0F
+0E
+0D
+0C
+0B
+0A
+b0 @
+b0 ?
+bx >
+bx =
+x<
+x;
+x:
+x9
+x8
+x7
+x6
+x5
+x4
+x3
+x2
+x1
+bx000 0
+bx /
+bx .
+bx -
+bx ,
+bx +
+bx *
+bx )
+bx (
+x'
+bx &
+bx %
+0$
+bx #
+bx "
+bx000 !
+$end
+#5
+xG
+xF
+xJ
+xB
+xK
+xH
+xC
+xI
+xM
+xL
+xE
+xA
+b0 !
+b0 0
+b0 "
+b0 *
+b0 Q
+0<
+09
+02
+01
+05
+0:
+06
+03
+0;
+04
+08
+07
+b0 >
+b0 =
+0'
+b0 &
+b0 -
+b0 %
+b0 ,
+b0 )
+b0 /
+b0 (
+b0 .
+b0 #
+b0 +
+1$
+#10
+0$
+#15
+b101 O
+b10000 N
+0G
+0F
+0J
+0B
+0K
+0H
+0C
+0I
+0M
+0L
+0E
+1A
+b101 >
+b10000 =
+1<
+1$
+b1 #
+b1 +
+b101 )
+b101 /
+b10000 (
+b10000 .
+#20
+0$
+#25
+1E
+0A
+b10101000 !
+b10101000 0
+b10101 "
+b10101 *
+b10101 Q
+0<
+19
+1$
+b10 #
+b10 +
+#30
+0$
+#35
+1M
+0E
+09
+11
+1$
+b1000 #
+b1000 +
+#40
+0$
+#45
+1I
+0M
+b1011000 !
+b1011000 0
+b1011 "
+b1011 *
+b1011 Q
+01
+15
+1$
+b10000 #
+b10000 +
+#50
+0$
+#55
+1C
+0I
+b1010000000 !
+b1010000000 0
+b1010000 "
+b1010000 *
+b1010000 Q
+05
+1:
+1$
+b100000 #
+b100000 +
+#60
+0$
+#65
+b1111111111111111 N
+1H
+0C
+b0 !
+b0 0
+b0 "
+b0 *
+b0 Q
+b1000 S
+b10000000000000000000000000000011 R
+b1111111111111111 =
+0:
+16
+1$
+b1111111111111111 (
+b1111111111111111 .
+b1000000 #
+b1000000 +
+#70
+0$
+#75
+1D
+1K
+0H
+b101000 !
+b101000 0
+b101 "
+b101 *
+b101 Q
+06
+13
+1$
+b101 %
+b101 ,
+1'
+b10000000 #
+b10000000 +
+#80
+0$
+#85
+b11 O
+b1 N
+1B
+0K
+b1 =
+03
+1;
+1$
+b11 )
+b11 /
+b1 (
+b1 .
+b100000000 #
+b100000000 +
+#90
+0$
+#95
+b10 O
+b1000 N
+1J
+0B
+b0 !
+b0 0
+b0 "
+b0 *
+b0 Q
+b1000 =
+0;
+14
+1$
+b10 )
+b10 /
+b1000 (
+b1000 .
+b1000000000 #
+b1000000000 +
+#100
+0$
+#105
+b1010 O
+b1010 N
+0J
+1C
+b1111111111110101000 !
+b1111111111110101000 0
+b1111111111110101 "
+b1111111111110101 *
+b1111111111110101 Q
+b1010 =
+1:
+04
+1$
+b1010 )
+b1010 /
+b1010 (
+b1010 .
+b100000 #
+b100000 +
+#110
+0$
+#115
+0C
+b0 !
+b0 0
+b0 "
+b0 *
+b0 Q
+b1000 S
+0:
+1$
+b0 #
+b0 +
+#120
+0$
+#125
+1$

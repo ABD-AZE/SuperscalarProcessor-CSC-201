@@ -9,6 +9,7 @@
 6) The basic principle we are following is that before passing the two instructions into the two pipelines, we check whether the two instructions can be executed at the same time or not, i.e., we check for WAW, RAW, WAR all three hazards. If they are non-existent, we pass them in the two pipelines, or pass the instructions one by one in one pipeline and pass bubble(NOP) in the other.
 7) We first are trying only for structural and data hazard. If time permits, also for control hazard.
 
+## Harvard machine (dedicated instruction memory).
 
 ISA DEGIGN.<,br>
 16 bit instruction => IR size =16 bits. <br>

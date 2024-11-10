@@ -13,6 +13,10 @@ The pipeline stages are defined as follows:
 - **Memory Access Stage**: This stage handles data memory operations such as load and store. Both pipelines share access to a unified memory unit, with arbitration logic to manage simultaneous access requests.
 - **Writeback Stage**: In this final stage, the results of computations are written back to the register file. Dual write ports have been implemented to allow both pipelines to perform writeback operations concurrently.
 
+<img width="748" alt="image" src="https://github.com/user-attachments/assets/58e7a89c-6620-4e4d-b0ea-14ad207c8b47">
+
+<img width="958" alt="image" src="https://github.com/user-attachments/assets/8f5587b9-af28-47ba-9f41-c63ecfe9faa2">
+
 ## ISA Design
 
 Our superscalar processor is designed as a **Harvard machine** with dedicated instruction memory. The **instruction set architecture (ISA)** is tailored to support basic arithmetic, logical, and branching operations. The ISA specifications are as follows:
@@ -99,11 +103,11 @@ Managing **dual pipelines** with limited resources requires careful handling of 
 Our superscalar processor with dual pipelines aims to enhance processing speed by executing two instructions simultaneously. By leveraging techniques such as data forwarding, stalling, branch prediction, and resource arbitration, we effectively manage the complexities introduced by instruction-level parallelism and limited resource availability. The detailed implementation of these features can be reviewed in our GitHub repository, which contains the Verilog code, testbenches, and documentation outlining the pipeline architecture and hazard management logic.
 
 The **dual pipelining** approach, combined with advanced hazard management techniques, allows our processor to achieve significant improvements in throughput while maintaining correctness and efficiency. Our work demonstrates the potential of superscalar architectures in achieving high performance through parallel instruction execution and effective resource management.
+
 <img width="603" alt="image" src="https://github.com/user-attachments/assets/8e0aa196-6381-4654-a46a-828382646f3b">
+
 The ALU circuit diagram above shows the different functional units (Adder, Multiplier, Shift Unit, Logical Unit, and Mov Unit) and how the control signals (`isAdd`, `isSub`, `isMul`, `isCmp`, etc.) determine the operations performed on the operands `A` and `B`. The output from these units is directed to the `aluResult`, which is then used in subsequent stages of the pipeline.
 
-<img width="748" alt="image" src="https://github.com/user-attachments/assets/58e7a89c-6620-4e4d-b0ea-14ad207c8b47">
 
-<img width="958" alt="image" src="https://github.com/user-attachments/assets/8f5587b9-af28-47ba-9f41-c63ecfe9faa2">
 
 

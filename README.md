@@ -16,6 +16,9 @@ ISA DEGIGN.<,br>
 16 bit instruction => IR size =16 bits. <br>
 No. of instructions = 16. <br>
 No. of Registers = 8.<br>
+The eighth register is the Flag Register (r7). 
+1-->equal
+2-->greater than
 memory size = 32 words<br>
 pc size = 16 bit<br>
 So, size of opcode = 4 bits.<br>
@@ -168,3 +171,27 @@ bgt offset
 <img width="748" alt="image" src="https://github.com/user-attachments/assets/58e7a89c-6620-4e4d-b0ea-14ad207c8b47">
 
 <img width="958" alt="image" src="https://github.com/user-attachments/assets/8f5587b9-af28-47ba-9f41-c63ecfe9faa2">
+
+## Instruction Fetch (IF) 
+* Fetch an instruction from the instruction memory
+* Compute the address of the next instruction
+  
+## Operand Fetch (OF)
+* Decode the instruction (break it into fields)
+* Fetch the register operands from the register file
+* Compute the branch target (offset)
+* Compute the immediate (5 bits)
+* Generate control signals
+
+## Execute Stage (EX)
+* Contains an Arithmetic-Logical Unit (ALU)
+* This unit can perform all arithmetic operations ( add, sub, mul, cmp) and logical operations (and, or, not)
+* Contains the branch unit for computing the branch condition (beq, bgt)
+* Contains the flag register (updated by the cmp instruction)
+
+## Memory Access Stage (MA)
+* Interfaces with the memory system
+* Executes a load or a store
+
+## Register Write Stage (RW)
+* Writes to the register file

@@ -2,13 +2,10 @@ module decode_unit (
     input wire clk,
     input wire reset,
     input wire stall,                               // Stall signal
-    input wire isld,
     input wire is_branch_taken,                     // Branch taken signal
     input wire [15:0] instr,                        // 16-bit instruction
-    input wire [18:0] rdvalalu1,
-    input wire [18:0] rdvalalu2,
-    input wire [18:0] rdvalmem1,
-    input wire [18:0] rdvalmem2,
+    input wire [19:0] rdvalmem1,
+    input wire [19:0] rdvalmem2,
     output wire [4:0] imm,                          // 5-bit immediate value
     output wire [3:0] opcode,                       // 4-bit Opcode
     output wire [15:0] branch_target,               // Calculated branch target
@@ -20,7 +17,6 @@ module decode_unit (
     reg [3:0] opcode_reg;
     reg [15:0] branch_target_reg, op1_reg, op2_reg;
     reg imm_flag_reg;
-    reg [18:0] rd_val1,rd_val2;
     // Register file
     reg [2:0] rd, rs1, rs2;                         // Register fields
     reg [15:0] registers [0:7];                     // Register file memory (16 registers)
@@ -30,17 +26,6 @@ module decode_unit (
     reg [3:0] opcode_next;
     reg [15:0] branch_target_next, op1_next, op2_next;
     reg imm_flag_next;
-
-    initial begin
-        if(isld==1)begin
-            rd_val1=rdvalmem1;
-            rd_val2=rdvalmem2;
-        end
-        else begin
-            rd_val1=rdvalalu1;
-            rd_val2=rdvalalu2;
-        end
-    end
 
     // Load the hex file at the start
     initial begin
@@ -67,20 +52,20 @@ module decode_unit (
             branch_target_next <= 16'h0;
         end else if (!stall) begin
             // Decode instruction and load next-cycle values into pipeline registers
-            if((rd_val1[2:0]==instr[7:5])) begin
-                op1_next<=rd_val1[18:3];
+            if((rdvalmem1[19]==0)&&(rdvalmem1[2:0]==instr[7:5])) begin
+                op1_next<=rdvalmem1[18:3];
             end
-            else if((rd_val2[2:0]==instr[7:5])) begin
-                op1_next<=rd_val2[18:3];
+            else if((rdvalmem2[19]==0)&&(rdvalmem2[2:0]==instr[7:5])) begin
+                op1_next<=rdvalmem2[18:3];
             end
             else begin
                 op1_next <= registers[instr[7:5]];
             end
-            if((instr[11]==0)&&(rd_val1[2:0]==instr[4:2])) begin
-                op2_next <= rd_val1[18:3];
+            if((rdvalmem1[19]==0)&&(instr[11]==0)&&(rdvalmem1[2:0]==instr[4:2])) begin
+                op2_next <= rdvalmem1[18:3];
             end
-            else if((instr[11]==0)&&(rd_val2[2:0]==instr[4:2])) begin
-                op2_next <= rd_val2[18:3];
+            else if((rdvalmem2[19]==0)&&(instr[11]==0)&&(rdvalmem2[2:0]==instr[4:2])) begin
+                op2_next <= rdvalmem2[18:3];
             end
             else if(instr[11]==0) begin
                 op2_next <= registers[instr[4:2]];

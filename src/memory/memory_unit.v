@@ -11,7 +11,7 @@ module memory_unit (
     integer i;
     reg [15:0] memory[0:31]; // Memory array to hold values from hex file , 32 addressess and 16 bit data
     initial begin
-        $readmemh("registers.hex", memory);
+        $readmemh("data_memory.hex", memory);
         ld_reg = 16'h0000;
         ld = 16'h0000;
         rd = 4'h0;   
@@ -25,15 +25,15 @@ module memory_unit (
     reg [19:0] rdval;
     always @(posedge clk) begin
         if (isld) begin
-            $readmemh("registers.hex", memory);
+            $readmemh("data_memory.hex", memory);
             ld_reg <= memory[aluresult];
-            $readmemh("registers.hex", memory);
+            $readmemh("data_memory.hex", memory);
             result <= {1'h0,memory[aluresult],instr[7:5]};
             $display("rdval = %h", result);
         end
         else if (isst) begin
-            $readmemh("registers.hex", memory);
-            file = $fopen("registers.hex", "w");
+            $readmemh("data_memory.hex", memory);
+            file = $fopen("data_memory.hex", "w");
             memory[aluresult] = op2;
             for (i = 0; i < 32; i = i + 1) begin
                 $fwrite(file, "%h\n", memory[i]); 

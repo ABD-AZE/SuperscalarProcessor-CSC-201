@@ -33,7 +33,8 @@ Our superscalar processor is designed as a **Harvard machine** with dedicated in
 ### Instruction Format
 The instruction format is divided as follows:
 
-| Opcode (4 bits) | I (1 bit) | rd (3 bits) | rs1 (3 bits) | rs2/imm (5 bits) |
+<img width="703" alt="image" src="https://github.com/user-attachments/assets/a8b4344b-c5f9-4b7e-9c00-077c640cb979">
+
 
 The custom processor supports 16 instructions:
 1. **NOP** - No operation (Opcode: 0000)

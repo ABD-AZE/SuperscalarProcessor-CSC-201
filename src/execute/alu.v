@@ -1,6 +1,7 @@
 
 // update the flags register and do the required calculations
 module alu(
+    input wire reset,
     input wire clk,
     input wire [11:0] alusignals,
     input wire [15:0] instrin,
@@ -23,7 +24,8 @@ module alu(
     input wire [4:0] immx,
     input wire isimmediate,
     output wire [15:0] aluresult,
-    output wire [15:0] instrout
+    output wire [15:0] instrout,
+    input wire is_branch_takenin
 );
     integer file;
     integer i;
@@ -96,61 +98,67 @@ module alu(
         instrout_reg1 = 16'b0;
     end
     always @(posedge clk) begin
-        if (isimmediate_reg) begin
-            A <= op1;
-            B <= immx;
-        end else begin
-            A <= op1;
-            B <= op2;
+        if(is_branch_takenin || reset) begin
+            result <= 16'h0;
+            instrout_reg <= 16'h0;
         end
-        if (isadd_reg) begin
-            result <= A + B;
-        end else if (isld_reg) begin
-            result <= A + B;
-        end else if (isst_reg) begin
-            result <= A + B;
-        end else if (issub_reg) begin
-            result <= A - B;
-        end else if (ismul_reg) begin
-            result <= A * B;
-        end else if (iscmp_reg) begin // 1 for equal, 2 for greater than  , 0 for less than 
-            if (A == B) begin
-                result <= 16'b1;
-                reg_file[7] = 16'b1;
-            end else if (A>B) begin
-                result <= 16'b0;
-                reg_file[7] = 16'h2;
+        else begin
+            if (isimmediate_reg) begin
+                A <= op1;
+                B <= immx;
             end else begin
-                result <= 16'b0;
-                reg_file[7] = 16'h0;
+                A <= op1;
+                B <= op2;
             end
-            file = $fopen("registers.hex", "w");
-            if (file) begin
-                $display("Writing modified data...");
-                // Write each modified memory value to the new file
-                for (i = 0; i < 8; i = i + 1) begin
-                    $fwrite(file, "%h\n", reg_file[i]);  // Write as hexadecimal
-                    $display("Data written to register file successfully. %h",reg_file[i]);
+            if (isadd_reg) begin
+                result <= A + B;
+            end else if (isld_reg) begin
+                result <= A + B;
+            end else if (isst_reg) begin
+                result <= A + B;
+            end else if (issub_reg) begin
+                result <= A - B;
+            end else if (ismul_reg) begin
+                result <= A * B;
+            end else if (iscmp_reg) begin // 1 for equal, 2 for greater than  , 0 for less than 
+                if (A == B) begin
+                    result <= 16'b1;
+                    reg_file[7] = 16'b1;
+                end else if (A>B) begin
+                    result <= 16'b0;
+                    reg_file[7] = 16'h2;
+                end else begin
+                    result <= 16'b0;
+                    reg_file[7] = 16'h0;
                 end
-                $fclose(file);  // Close the file
-                $display("Data written to register file successfully.");
+                file = $fopen("registers.hex", "w");
+                if (file) begin
+                    $display("Writing modified data...");
+                    // Write each modified memory value to the new file
+                    for (i = 0; i < 8; i = i + 1) begin
+                        $fwrite(file, "%h\n", reg_file[i]);  // Write as hexadecimal
+                        $display("Data written to register file successfully. %h",reg_file[i]);
+                    end
+                    $fclose(file);  // Close the file
+                    $display("Data written to register file successfully.");
+                end else begin
+                    $display("Error: Could not open file for writing.");
+                end
+            end else if (ismov_reg) begin
+                result <= B;
+            end else if (isor_reg) begin
+                result <= A | B;
+            end else if (isand_reg) begin
+                result <= A & B;
+            end else if (isnot_reg) begin
+                result <= ~A;
+            end else if (islsl_reg) begin
+                result <= A << B;
+            end else if (islsr_reg) begin
+                result <= A >> B;
             end else begin
-                $display("Error: Could not open file for writing.");
+                result <= 16'b0;
             end
-        end else if (ismov_reg) begin
-            result <= B;
-        end else if (isor_reg) begin
-            result <= A | B;
-        end else if (isand_reg) begin
-            result <= A & B;
-        end else if (isnot_reg) begin
-            result <= ~A;
-        end else if (islsl_reg) begin
-            result <= A << B;
-        end else if (islsr_reg) begin
-            result <= A >> B;
-        end else begin
-            result <= 16'b0;
         end
         isadd_reg <= isadd;
         isld_reg <= isld;
@@ -166,11 +174,13 @@ module alu(
         islsr_reg <= islsr;
         isimmediate_reg <= isimmediate;
         op1_reg <= op1;
-        op2_reg <= op2;    
-        instrout_reg <= instrin;
+        op2_reg <= op2;
+        if(is_branch_takenin==0) begin    
+            instrout_reg <= instrin;
+        end
         instrout_reg1 <= instrout_reg;
         result_1<=result;
     end
-    assign aluresult = result_1;
+    assign aluresult = result;
     assign instrout = instrout_reg1;
 endmodule

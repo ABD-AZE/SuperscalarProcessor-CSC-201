@@ -234,7 +234,7 @@ module top_module();
     alu alu1(
         .clk(clk),
         .reset(reset),
-        .is_branch_takenin(0),  // if is_branch_takenin is 1 then flush the pipeline
+        .is_branch_takenin(1'b0),  // if is_branch_takenin is 1 then flush the pipeline
         .alusignals({isadd1, isld1, isst1, issub1, ismul1, iscmp1, ismov1, isor1, isand1, isnot1, islsl1, islsr1}),
         .instrin(instrdecodealu1),
         .op1(op11),

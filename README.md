@@ -35,6 +35,7 @@ Opcode (4 bits)	|      I (1 bit)  	|      rd (3 bits)	|    rs1 (3 bits)      |  
 - **Binary**: `0000_0_000_000_00000 → 0 0 0 0 0`
 
 ## 2. ADD rd, rs1, rs2
+add rd, rs1, (rs2/imm)
 - **Opcode**: `0001`
 - **I**: 0 (register-register)
 - **Example**: `ADD R1, R2, R3`
@@ -44,6 +45,7 @@ Opcode (4 bits)	|      I (1 bit)  	|      rd (3 bits)	|    rs1 (3 bits)      |  
 - **Binary**: `0001_1_001_010_00101 → 1 1 1 2 5`
 
 ## 3. SUB rd, rs1, rs2
+sub rd, rs1, (rs2/imm)
 - **Opcode**: `0010`
 - **I**: 0 (register-register)
 - **Example**: `SUB R4, R5, R6`
@@ -54,6 +56,7 @@ Opcode (4 bits)	|      I (1 bit)  	|      rd (3 bits)	|    rs1 (3 bits)      |  
 - **Binary**: `0010_1_100_101_00111 → 2 1 4 5 7`
 
 ## 4. MUL rd, rs1, rs2
+sub rd, rs1, (rs2/imm)
 - **Opcode**: `0011`
 - **I**: 0 (register-register)
 - **Example**: `MUL R7, R0, R1`
@@ -64,22 +67,29 @@ Opcode (4 bits)	|      I (1 bit)  	|      rd (3 bits)	|    rs1 (3 bits)      |  
 - **Binary**: `0011_1_111_000_00011 → 3 1 7 0 3`
 
 ## 5. LOAD rd, [rs1 + imm]
+ld rd, imm[rs1]
 - **Opcode**: `0100`
 - **I**: 1
 - **Example**: `LOAD R2, [R3 + 5]`
 - **Binary**: `0100_1_010_011_00101 → 4 1 2 3 5`
 
 ## 6. STORE rs1, [rs2 + imm]
+st rd, imm[rs1]
 - **Opcode**: `0101`
 - **I**: 1
 - **Example**: `STORE R5, [R6 + 10]`
 - **Binary**: `0101_1_101_110_01010 → 5 1 5 6 A`
 
 ## 7. CMP rs1, rs2
+cmp rs1, (rs2/imm)
 - **Opcode**: `0110`
 - **I**: 0
 - **Example**: `CMP R1, R2`
-- **Binary**: `0110_0_001_010_00000 → B 0 1 2 0`
+- **Binary**: `0110_0_001_000_00010 → B 0 1 0 2`
+  
+- **I**: 1
+- **Example**: `CMP R1, 3`
+- **Binary**: `0110_0_001_000_00011 → B 0 1 2 0`
 
 ## 8. MOV rd, rs1
 - **Opcode**: `0111`

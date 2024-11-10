@@ -10,11 +10,14 @@ module decode_unit (
     output wire [3:0] opcode,                       // 4-bit Opcode
     output wire [15:0] branch_target,               // Calculated branch target
     output wire [15:0] op1, op2,                    // Operand values
-    output wire imm_flag                            // Immediate flag
+    output wire imm_flag,                            // Immediate flag
+    output wire [15:0] instrout
 );
     // Internal registers for decoding and pipeline
     reg [4:0] imm_reg;
     reg [3:0] opcode_reg;
+    reg [15:0] instrn;
+    reg [15:0] instrun;
     reg [15:0] branch_target_reg, op1_reg, op2_reg;
     reg imm_flag_reg;
     // Register file
@@ -41,6 +44,7 @@ module decode_unit (
             branch_target_next <= 16'h0;
             op1_next <= 16'h0;
             op2_next <= 16'h0;
+            instrun <= 16'h0;
             imm_flag_next <= 0;
         end else if (is_branch_taken) begin
             // Handle branch flush; outputs reset to NOP
@@ -50,6 +54,7 @@ module decode_unit (
             op1_next <= 16'h0;
             op2_next <= 16'h0;
             branch_target_next <= 16'h0;
+            instrun <=16'h0;
         end else if (!stall) begin
             // Decode instruction and load next-cycle values into pipeline registers
             if((rdvalmem1[19]==0)&&(rdvalmem1[2:0]==instr[7:5])) begin
@@ -87,6 +92,7 @@ module decode_unit (
             //     op2_next <= registers[rs2];
             // end
             branch_target_next <= {5'b0, instr[10:0]};
+            instrun <= instr;
         end
 
         // Update internal pipeline registers with next-cycle values
@@ -96,6 +102,7 @@ module decode_unit (
         op1_reg <= op1_next;
         op2_reg <= op2_next;
         imm_flag_reg <= imm_flag_next;
+        instrn <= instrun;
         if(stall) begin 
             opcode_reg <= 4'h0;
             imm_reg <= 5'h00;
@@ -112,5 +119,5 @@ module decode_unit (
     assign op1 = op1_reg;
     assign op2 = op2_reg;
     assign imm_flag = imm_flag_reg;
-
+    assign instrout= instrn;
 endmodule

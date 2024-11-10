@@ -15,7 +15,8 @@ The pipeline stages are defined as follows:
 
 <img width="748" alt="image" src="https://github.com/user-attachments/assets/58e7a89c-6620-4e4d-b0ea-14ad207c8b47">
 
-<img width="958" alt="image" src="https://github.com/user-attachments/assets/8f5587b9-af28-47ba-9f41-c63ecfe9faa2">
+<img width="612" alt="image" src="https://github.com/user-attachments/assets/f8892b08-c314-4d5e-912a-72d1be562846">
+
 
 ## ISA Design
 

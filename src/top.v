@@ -15,8 +15,8 @@ module top_module();
     wire is_branch_taken;
     wire [15:0] branch_target;
     wire issingleinstr;
-    wire [15:0] instr1;
-    wire [15:0] instr2;
+    wire [15:0] instr1fetchrelayer;
+    wire [15:0] instr2fetchrelayer;
     //fetch unit
     fetch_unit fetch_unit_1(
         .clk(clk),
@@ -25,8 +25,21 @@ module top_module();
         .is_branch_taken(is_branch_taken),
         .branch_target(branch_target),
         .issingleinstr(issingleinstr),
-        .instr1(instr1),
-        .instr2(instr2)
+        .instr1(instr1fetchrelayer),
+        .instr2(instr2fetchrelayer)
+    );
+    wire [15:0] instr1final;
+    wire [15:0] instr2final;
+    //relayer
+    relayer relayer_1(
+        .instr1_in(instr1fetchrelayer),
+        .instr2_in(instr2fetchrelayer),
+        .instr1_o(instr1final),
+        .instr2_o(),
+        .stall(stall),
+        .is_branch_taken(is_branch_taken),
+        .branch_target(branch_target),
+        .issingleinstr(issingleinstr)
     );
 
 

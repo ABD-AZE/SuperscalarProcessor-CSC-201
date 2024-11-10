@@ -4,6 +4,8 @@ module decode_unit (
     input wire stall,                               // Stall signal
     input wire is_branch_taken,                     // Branch taken signal
     input wire [15:0] instr,                        // 16-bit instruction
+    input wire [18:0] rd_val1,
+    input wire [18:0] rd_val2,
     output wire [4:0] imm,                          // 5-bit immediate value
     output wire [3:0] opcode,                       // 4-bit Opcode
     output wire [15:0] branch_target,               // Calculated branch target
@@ -51,20 +53,40 @@ module decode_unit (
             branch_target_next <= 16'h0;
         end else if (!stall) begin
             // Decode instruction and load next-cycle values into pipeline registers
+            if((rd_val1[2:0]==instr[7:5])) begin
+                op1_next<=rd_val1[18:3];
+            end
+            else if((rd_val2[2:0]==instr[7:5])) begin
+                op1_next<=rd_val2[18:3];
+            end
+            else begin
+                op1_next <= registers[instr[7:5]];
+            end
+            if((instr[11]==0)&&(rd_val1[2:0]==instr[4:2])) begin
+                op2_next <= rd_val1[18:3];
+            end
+            else if((instr[11]==0)&&(rd_val2[2:0]==instr[4:2])) begin
+                op2_next <= rd_val2[18:3];
+            end
+            else if(instr[11]==0) begin
+                op2_next <= registers[instr[4:2]];
+            end
+            else begin
+                op2_next <= {11'b0, instr[4:0]};
+            end
             opcode_next <= instr[15:12];
             imm_flag_next <= instr[11];
             rd = instr[10:8];
             rs1 = instr[7:5];
-            imm_next <= instr[4:0];
+            imm_next <= instr[4:0]; 
             rs2 = instr[4:2];
-
-            if (instr[11]) begin
-                op1_next <= registers[rs1];
-                op2_next <= {11'b0, instr[4:0]};
-            end else begin
-                op1_next <= registers[rs1];
-                op2_next <= registers[rs2];
-            end
+            // if (instr[11]) begin
+            //     op1_next <= registers[rs1];
+            //     op2_next <= {11'b0, instr[4:0]};
+            // end else begin
+            //     op1_next <= registers[rs1];
+            //     op2_next <= registers[rs2];
+            // end
             branch_target_next <= {5'b0, instr[10:0]};
         end
 

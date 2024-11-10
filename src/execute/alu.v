@@ -1,3 +1,4 @@
+
 // update the flags register and do the required calculations
 module alu(
     input wire clk,
@@ -72,6 +73,7 @@ module alu(
     reg [15:0] result;
     reg instrout_reg;
     reg instrout_reg1;
+    reg [15:0]result_1;
     initial begin
         $readmemh("registers.hex", reg_file);
         isadd_reg = 1'b0;
@@ -95,11 +97,11 @@ module alu(
     end
     always @(posedge clk) begin
         if (isimmediate_reg) begin
-            A = op1;
-            B = immx;
+            A <= op1;
+            B <= immx;
         end else begin
-            A = op1;
-            B = op2;
+            A <= op1;
+            B <= op2;
         end
         if (isadd_reg) begin
             result <= A + B;
@@ -167,7 +169,8 @@ module alu(
         op2_reg <= op2;    
         instrout_reg <= instrin;
         instrout_reg1 <= instrout_reg;
+        result_1<=result;
     end
-    assign aluresult = result;
+    assign aluresult = result_1;
     assign instrout = instrout_reg1;
 endmodule

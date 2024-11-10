@@ -34,7 +34,7 @@ module memory_unit (
             ld_reg <= memory[aluresult];
             $readmemh("data_memory.hex", memory);
             result <= {1'h0,memory[aluresult],instr[7:5]};
-            $display("rdval = %h", result);
+            // $display("rdval = %h", result);
         end
         else if (isst) begin
             $readmemh("data_memory.hex", memory);
@@ -46,15 +46,15 @@ module memory_unit (
             ld_reg <= 16'h0000;
             $fclose(file);
             result <= {1'h1,19'h0};
-            $display("rdval = %h", result);
+            // $display("rdval = %h", result);
         end
         else begin 
             ld_reg <= 16'h0000;
             // result_1 = {aluresult, instr[7:5]};
             result <= {1'h0,aluresult, instr[7:5]};
-            $display("rdval = %h", result);
+            // $display("rdval = %h", result);
         end
-        $display("ldresult = %h", ld);
+        // $display("ldresult = %h", ld);
         ld <= ld_reg;
         instr_rd <= instr[7:5];
         rd <= instr_rd;

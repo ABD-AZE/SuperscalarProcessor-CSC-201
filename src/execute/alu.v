@@ -133,16 +133,16 @@ module alu(
                 end
                 file = $fopen("registers.hex", "w");
                 if (file) begin
-                    $display("Writing modified data...");
+                    // $display("Writing modified data...");
                     // Write each modified memory value to the new file
                     for (i = 0; i < 8; i = i + 1) begin
                         $fwrite(file, "%h\n", reg_file[i]);  // Write as hexadecimal
-                        $display("Data written to register file successfully. %h",reg_file[i]);
+                        // $display("Data written to register file successfully. %h",reg_file[i]);
                     end
                     $fclose(file);  // Close the file
-                    $display("Data written to register file successfully.");
+                    // $display("Data written to register file successfully.");
                 end else begin
-                    $display("Error: Could not open file for writing.");
+                    // $display("Error: Could not open file for writing.");
                 end
             end else if (ismov_reg) begin
                 result <= B;

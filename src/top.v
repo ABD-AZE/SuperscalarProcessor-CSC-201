@@ -185,15 +185,20 @@ module top_module();
     // output wire [15:0] branchpc,
     // output wire isbranchtaken
     wire [15:0] branchpc1;
+    reg [31:0] regmem[0:7];
     reg [127:0] regval;
+    integer i;
     always@(posedge clk) begin
         if(reset) begin
             regval <= 128'h0;
         end
         else begin
-            $readmemh("registers.hex", regval);
+            $readmemh("registers.hex", regmem);
         end
+        regval = {regmem[0], regmem[1], regmem[2], regmem[3], regmem[4], regmem[5], regmem[6], regmem[7]};
     end
+    
+
     execute_unit execute_unit1(
         .clk(clk),
         .brachtarget(branch_target1),

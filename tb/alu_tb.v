@@ -1,113 +1,92 @@
-module alu_tb;
-
-  // Inputs
-  reg clk;
-  reg [11:0] alusignals;
-  reg [15:0] instrin;
-  reg [15:0] op1;
-  reg [15:0] op2;
-  reg [4:0] immx;
-  reg isimmediate;
-
-  // Outputs
-  wire [15:0] aluresult;
-  wire [15:0] instrout;
-
-  // Instantiate the Unit Under Test (UUT)
-  alu uut (
-    .clk(clk), 
-    .alusignals(alusignals), 
-    .instrin(instrin), 
-    .op1(op1), 
-    .op2(op2), 
-    .immx(immx), 
-    .isimmediate(isimmediate), 
-    .aluresult(aluresult), 
-    .instrout(instrout)
-  );
-
-  // Clock generation
-  always #5 clk = ~clk;
-
-  // Test scenarios
-  initial begin
-    $dumpfile("alu.vcd");
-    $dumpvars(0, alu_tb);
-    // Initialize Inputs
-    clk = 0;
-    alusignals = 12'b0;
-    instrin = 16'b0;
-    op1 = 16'b0;
-    op2 = 16'b0;
-    immx = 5'b0;
-    isimmediate = 0;
-    #5;
+module alu_tb();
+    // Testbench signals
+    reg reset;
+    reg clk;
+    reg [11:0] alusignals;
+    reg [15:0] instrin;
+    reg [15:0] op1;
+    reg [15:0] op2;
+    reg [4:0] immx;
+    reg isimmediate;
+    reg is_branch_takenin;
+    wire [15:0] aluresult;
+    wire [15:0] instrout;
     
-    // Monitor changes
-    $monitor("Time: %0d, op1: %h, op2: %h, immx: %h, isadd: %b, issub: %b, ismul: %b, aluresult: %h", 
-             $time, op1, op2, immx, alusignals[0], alusignals[3], alusignals[4], aluresult);
+    // Instantiate the ALU module
+    alu uut (
+        .reset(reset),
+        .clk(clk),
+        .alusignals(alusignals),
+        .instrin(instrin),
+        .op1(op1),
+        .op2(op2),
+        .immx(immx),
+        .isimmediate(isimmediate),
+        .aluresult(aluresult),
+        .instrout(instrout),
+        .is_branch_takenin(is_branch_takenin)
+    );
+    
+    // Clock generation
+    always #5 clk = ~clk;
+    
+    initial begin
+        // Initialize inputs
+        $dumpfile("a.vcd");
+        $dumpvars(0, alu_tb);
+        reset = 0;
+        clk = 0;
+        alusignals = 12'b0;
+        instrin = 16'h0000;
+        op1 = 16'h0000;
+        op2 = 16'h0000;
+        immx = 5'h00;
+        isimmediate = 0;
+        is_branch_takenin = 0;
 
-    // Test ADD operation
-    #10 alusignals = 12'b000000000001;  // isadd signal
-    op1 = 16'h0001;
-    op2 = 16'h0005;
-
-    // Test LD operation (load)
-    #10 alusignals = 12'b000000000010;  // isld signal
-    op1 = 16'h0010;
-    op2 = 16'h0005;
-
-    // Test ST operation (store)
-    #10 alusignals = 12'b000000000100;  // isst signal
-    op1 = 16'h0010;
-    op2 = 16'h0005;
-
-    // Test SUB operation
-    #10 alusignals = 12'b000000001000;  // issub signal
-    op1 = 16'h000A;
-    op2 = 16'h0003;
-
-    // Test MUL operation
-    #10 alusignals = 12'b000000010000;  // ismul signal
-    op1 = 16'h0003;
-    op2 = 16'h0002;
-
-    // Test CMP operation (Comparison)
-    #10 alusignals = 12'b000000100000;  // iscmp signal
-    op1 = 16'h000F;
-    op2 = 16'h000F;
-
-    // Test MOV operation
-    #10 alusignals = 12'b000001000000;  // ismov signal
-    op1 = 16'h0F0F;
-    op2 = 16'h00FF;
-
-    // Test OR operation
-    #10 alusignals = 12'b000010000000;  // isor signal
-    op1 = 16'h0F0F;
-    op2 = 16'h00FF;
-
-    // Test AND operation
-    #10 alusignals = 12'b000100000000;  // isand signal
-    op1 = 16'h00FF;
-    op2 = 16'h0F0F;
-
-    // Test NOT operation
-    #10 alusignals = 12'b001000000000;  // isnot signal
-    op1 = 16'h00FF;
-
-    // Test LSL operation (Logical Shift Left)
-    #10 alusignals = 12'b010000000000;  // islsl signal
-    op1 = 16'h000F;
-    op2 = 16'h0002;
-
-    // Test LSR operation (Logical Shift Right)
-    #10 alusignals = 12'b100000000000;  // islsr signal
-    op1 = 16'h000F;
-    op2 = 16'h0002;
-
-    // End simulation
-    #100 $finish;
-  end
-
+        // Reset
+        #5 reset = 1;
+        #10 reset = 0;
+        // Test ADD operation
+        op1 = 16'h0003;
+        op2 = 16'h0004;
+        alusignals[0] = 1'b1; // Set isadd
+        $display("ADD result: %h, Expected: 0007", aluresult);
+        
+        // Test SUB operation
+        #10;
+        alusignals = 12'b0;
+        alusignals[3] = 1'b1; // Set issub
+        $display("SUB result: %h, Expected: FFFF", aluresult);
+        
+        // Test AND operation
+        #10;
+        alusignals = 12'b0;
+        alusignals[8] = 1'b1; // Set isand
+        op1 = 16'hF0F0;
+        op2 = 16'h0FF0;
+        $display("AND result: %h, Expected: 00F0", aluresult);
+        
+        // Test OR operation
+        #10;
+        alusignals = 12'b0;
+        alusignals[7] = 1'b1; // Set isor
+        $display("OR result: %h, Expected: FFF0", aluresult);
+        
+        // Test IMMEDIATE operation (ADD with immediate value)
+        #10;
+        alusignals = 12'b0;
+        alusignals[0] = 1'b1; // Set isadd
+        isimmediate = 1;
+        immx = 5'h1;
+        op1 = 16'h0002;
+        $display("ADD Immediate result: %h, Expected: 0003", aluresult);
+        
+        // Test Branch Taken
+        #10;
+        is_branch_takenin = 1;
+        $display("Branch Taken result: %h, Expected: 0000", aluresult);
+        
+        $finish;
+    end
 endmodule

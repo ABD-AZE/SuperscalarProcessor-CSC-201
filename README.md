@@ -56,6 +56,8 @@ The custom processor supports 16 instructions:
 15. **BEQ target** - Branch if Equal (Opcode: 1110)
 16. **BGT target** - Branch if Greater (Opcode: 1111)
 
+_The reader needs to note that the div and mod operations are in general, significantly slower, than add or multiply operations. They thus increase the maximum delay of the EX stage, and the pipeline consequently becomes unbalanced. Hence, most simple pipelined processors either refrain from implementing these instructions._
+
 ## CPI Formula and Instruction-Level Parallelism
 
 The **cycles per instruction (CPI)** is a key metric in assessing processor performance. In an ideal scenario without hazards or stalls, our dual-pipeline processor aims to achieve a CPI of approximately **0.5**, since it can potentially execute two instructions per cycle. However, in practice, achieving this ideal CPI is challenging due to various factors such as pipeline hazards, resource limitations, and data dependencies between instructions.

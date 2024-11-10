@@ -20,7 +20,6 @@ module alu(
     input wire [15:0] op1,
     input wire [15:0] op2,
     input wire [4:0] immx,
-    input wire [15:0] instr,
     input wire isimmediate,
     output wire [15:0] aluresult,
     output wire [15:0] instrout
@@ -94,7 +93,6 @@ module alu(
         instrout_reg = 16'b0;
         instrout_reg1 = 16'b0;
     end
-    reg [15:0] instrw;
     always @(posedge clk) begin
         if (isimmediate_reg) begin
             A = op1;

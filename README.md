@@ -26,7 +26,7 @@ Our superscalar processor is designed as a **Harvard machine** with dedicated in
 - **16-bit instruction word** (IR size = 16 bits)
 - **Number of instructions**: 16
 - **Number of Registers**: 8 (with the eighth register being the Flag Register `r7`)
-- **Memory size**: 32 words, word-addressable
+- **Memory size**:  2^11 blocks
 - **Program counter (PC) size**: 16 bits
 - **Opcode size**: 4 bits
 - **Immediate bit size**: 1 bit

@@ -6,7 +6,7 @@ module memory_unit (
     input wire [15:0] op2,
     input wire [15:0] aluresult,
     output wire [15:0] ldresult,
-    output wire [18:0] rd_val2
+    output wire [18:0] rdvalmem
 );
     integer i;
     reg [15:0] memory[0:31]; // Memory array to hold values from hex file , 32 addressess and 16 bit data
@@ -37,5 +37,5 @@ module memory_unit (
         #10 ld = ld_reg;
     end
     assign ldresult = ld;
-    assign rd_val2 = {ld,instr[10:8]};
+    assign rdvalmem = {ld,instr[10:8]};
 endmodule

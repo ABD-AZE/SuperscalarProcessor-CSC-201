@@ -18,7 +18,8 @@ module control_unit(
     output wire isbeq,
     output wire isbgt,
     output wire iswb,
-    output wire isubranch
+    output wire isubranch,
+    input wire is_branch_taken
 );
 
     // Internal registers
@@ -76,7 +77,7 @@ module control_unit(
     localparam BGT_OP      = 4'b1111;
 
     always @(posedge clk or posedge reset) begin
-        if (reset) begin
+        if (reset || is_branch_taken) begin
             // Reset all internal registers to 0
             isadd_next      <= 0;
             issub_next      <= 0;

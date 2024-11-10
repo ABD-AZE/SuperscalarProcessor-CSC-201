@@ -2,10 +2,13 @@ module decode_unit (
     input wire clk,
     input wire reset,
     input wire stall,                               // Stall signal
+    input wire isld,
     input wire is_branch_taken,                     // Branch taken signal
     input wire [15:0] instr,                        // 16-bit instruction
-    input wire [18:0] rd_val1,
-    input wire [18:0] rd_val2,
+    input wire [18:0] rdvalalu1,
+    input wire [18:0] rdvalalu2,
+    input wire [18:0] rdvalmem1,
+    input wire [18:0] rdvalmem2,
     output wire [4:0] imm,                          // 5-bit immediate value
     output wire [3:0] opcode,                       // 4-bit Opcode
     output wire [15:0] branch_target,               // Calculated branch target
@@ -17,7 +20,7 @@ module decode_unit (
     reg [3:0] opcode_reg;
     reg [15:0] branch_target_reg, op1_reg, op2_reg;
     reg imm_flag_reg;
-
+    reg [18:0] rd_val1,rd_val2;
     // Register file
     reg [2:0] rd, rs1, rs2;                         // Register fields
     reg [15:0] registers [0:7];                     // Register file memory (16 registers)
@@ -27,6 +30,17 @@ module decode_unit (
     reg [3:0] opcode_next;
     reg [15:0] branch_target_next, op1_next, op2_next;
     reg imm_flag_next;
+
+    initial begin
+        if(isld==1)begin
+            rd_val1=rdvalmem1;
+            rd_val2=rdvalmem2;
+        end
+        else begin
+            rd_val1=rdvalalu1;
+            rd_val2=rdvalalu2;
+        end
+    end
 
     // Load the hex file at the start
     initial begin

@@ -10,6 +10,7 @@
 7) We first are trying only for structural and data hazard. If time permits, also for control hazard.
 
 ## Harvard machine (dedicated instruction memory).
+There is a dedicated structure in the processor called the register  le that contains all the 8 registers
 
 ISA DEGIGN.<,br>
 16 bit instruction => IR size =16 bits. <br>

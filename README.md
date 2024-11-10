@@ -121,37 +121,39 @@ cmp rs1, (rs2/imm)
 - **Opcode**: `1010`
 - **I**: 0
 - **Example**: `NOT R1, R2`
-- **Binary**: `1010_0_001_010_00000 → C 0 1 2 0`
+- **Binary**: `1010_0_001_010_00000 → A 0 1 2 0`
 
 ## 12. LSL rd, rs1, rs2
 - **Opcode**: `1011`
 - **I**: 1
 - **Example**: `LSL R3, R4, 3`
-- **Binary**: `1011_1_011_100_00011 → D 1 3 4 3`
+- **Binary**: `1011_1_011_100_00011 → B 1 3 4 3`
 
-## 13. LSR rd, rs1, rs2
+## 13. JUMP target
+- **Opcode**: `1100`
+- **I**: 1
+- **Example**: `JUMP 15`
+- **Binary**: `1100_1_000_000_01111 → C 1 0 0 F`
+
+## 14. LSR rd, rs1, rs2
 - **Opcode**: `1101`
 - **I**: 1
 - **Example**: `LSR R3, R4, 2`
 - **Binary**: `1101_1_011_100_00010 → D 1 3 4 2`
 
-## 14. BEQ rs1, rs2, offset
+## 15. BEQ target
 - **Opcode**: `1110`
-- **I**: 0
-- **Example**: `BEQ R4, R5, 8`
-- **Binary**: `1110_0_100_101_01000 → A 0 4 5 8`
-
-## 15. BGT rs1, rs2, offset
-- **Opcode**: `1111`
-- **I**: 0
-- **Example**: `BGT R1, R2, -3`
-- **Binary**: `1111_0_001_010_11101 → 9 0 1 2 1D`
-
-## 16. JUMP target
-- **Opcode**: `1100`
 - **I**: 1
-- **Example**: `JUMP 15`
-- **Binary**: `1100_1_000_000_01111 → B 1 0 0 F`
+- **Example**: `BEQ 15`
+- **Binary**: `1110_0_100_101_01000 → E 1 0 0 F`
+
+## 16. BGT target
+- **Opcode**: `1111`
+- **I**: 1
+- **Example**: `BGT 15`
+- **Binary**: `1111_1_000_000_01111 → F 1 0 0 F`
+
+
 
 ---
 <img width="958" alt="image" src="https://github.com/user-attachments/assets/8f5587b9-af28-47ba-9f41-c63ecfe9faa2">

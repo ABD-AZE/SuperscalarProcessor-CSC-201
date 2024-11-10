@@ -1,79 +1,76 @@
 
 module memory_unit_tb;
-    // Testbench signals
     reg clk;
     reg isld;
     reg isst;
+    reg [15:0] instr;
     reg [15:0] op2;
     reg [15:0] aluresult;
     wire [15:0] ldresult;
+    wire [18:0] rdvalmem;
 
-    // Instantiate the memory_unit module
-    memory_unit dut (
+    // Instantiate the memory unit
+    memory_unit uut (
         .clk(clk),
         .isld(isld),
         .isst(isst),
+        .instr(instr),
         .op2(op2),
         .aluresult(aluresult),
-        .ldresult(ldresult)
+        .ldresult(ldresult),
+        .rdvalmem(rdvalmem)
     );
 
     // Clock generation
     initial begin
         clk = 0;
-        forever #5 clk = ~clk; // Toggle clock every 5 ns for a 10 ns period
+        forever #5 clk = ~clk;  // Toggle clock every 5 ns
     end
 
-
-    // Test sequence
+    // Initialize memory file and set up initial conditions
     initial begin
-        // Initialize control signals
         $dumpfile("memory_unit.vcd");
         $dumpvars(0, memory_unit_tb);
+        // Initialize control signals
+        #5; 
         isld = 0;
         isst = 0;
-        op2 = 16'h0000;
-        aluresult = 16'h0000;
+        instr = 16'b0;
+        op2 = 16'b0;
+        aluresult = 16'b0;
 
-        #5
+        // Initial reset state to read memory
+        $display("Starting memory unit test...");
 
-        // Display initial message
-        $display("Starting memory_unit testbench...");
-
-        // Wait for the initial clock cycle
+        // Test load operation
         #10;
+        aluresult = 16'h0002;  // Address to load from
+        isld = 1;
+        isst = 0;
+        #10;
+        isld = 0;
+        $display("Loaded data at address 0x0002: ldresult = %h, rdvalmem = %h", ldresult, rdvalmem);
+
         // Test store operation
-        $display("Testing store operation...");
+        #10;
+        aluresult = 16'h0003;  // Address to store to
+        op2 = 16'hABCD;       // Data to store
         isst = 1;
-        aluresult = 16'h0001; // Address to store at
-        op2 = 16'hA5A5;       // Data to store
-        isld = 0; // End of store operation
-
-        // Wait for a clock cycle, then test load operation
+        isld = 0;
         #10;
-        $display("Testing load operation...");
+        isst = 0;
+        $display("Stored data 0xABCD at address 0x0003");
+
+        // Verify if the data was stored correctly by loading it back
+        #10;
+        aluresult = 16'h0003;
         isld = 1;
-        aluresult = 16'h0002; // Address to load from
-        op2 = 16'h1000;
-        isst = 0; // End of load operation
-
-        // Test store operation at a different address
-        $display("Testing store operation at a different address...");
+        isst = 0;
         #10;
-        isst = 1;
-        aluresult = 16'h0003; // Address to store at
-        op2 = 16'h100A;       // Data to store
-        isld = 0; // End of store operation
+        isld = 0;
+        $display("Loaded data at address 0x0003 after store: ldresult = %h, rdvalmem = %h", ldresult, rdvalmem);
 
-        // Load from the new address
-        #10;
-        isld = 1;
-        aluresult = 16'h0004; // Address to load from
-        op2 = 16'h101A;       // Data to store
-        isst = 0; // End of load operation
-
-        // End of simulation
-        #20;
-        $finish;
+        // Add more test cases as needed
+        $finish;    
     end
 endmodule

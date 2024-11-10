@@ -1,5 +1,5 @@
 $date
-	Sat Nov  9 22:10:06 2024
+	Sun Nov 10 07:03:18 2024
 $end
 $version
 	Icarus Verilog
@@ -8,114 +8,113 @@ $timescale
 	1s
 $end
 $scope module memory_unit_tb $end
-$var wire 16 ! ldresult [15:0] $end
-$var reg 16 " aluresult [15:0] $end
-$var reg 1 # clk $end
-$var reg 1 $ isld $end
-$var reg 1 % isst $end
-$var reg 16 & op2 [15:0] $end
-$scope module dut $end
-$var wire 16 ' aluresult [15:0] $end
-$var wire 1 # clk $end
-$var wire 1 $ isld $end
-$var wire 1 % isst $end
-$var wire 16 ( ldresult [15:0] $end
-$var wire 16 ) op2 [15:0] $end
-$var reg 16 * ld [15:0] $end
-$var reg 16 + ld_reg [15:0] $end
-$var integer 32 , file [31:0] $end
-$var integer 32 - i [31:0] $end
+$var wire 19 ! rdvalmem [18:0] $end
+$var wire 16 " ldresult [15:0] $end
+$var reg 16 # aluresult [15:0] $end
+$var reg 1 $ clk $end
+$var reg 16 % instr [15:0] $end
+$var reg 1 & isld $end
+$var reg 1 ' isst $end
+$var reg 16 ( op2 [15:0] $end
+$scope module uut $end
+$var wire 16 ) aluresult [15:0] $end
+$var wire 1 $ clk $end
+$var wire 16 * instr [15:0] $end
+$var wire 1 & isld $end
+$var wire 1 ' isst $end
+$var wire 16 + ldresult [15:0] $end
+$var wire 16 , op2 [15:0] $end
+$var wire 19 - rdvalmem [18:0] $end
+$var reg 4 . instr_rd [3:0] $end
+$var reg 16 / ld [15:0] $end
+$var reg 16 0 ld_reg [15:0] $end
+$var reg 4 1 rd [3:0] $end
+$var integer 32 2 file [31:0] $end
+$var integer 32 3 i [31:0] $end
 $upscope $end
 $upscope $end
 $enddefinitions $end
 #0
 $dumpvars
-bx -
+bx 3
+bx 2
+b0 1
+b0 0
+b0 /
+b0 .
+b0 -
 bx ,
 b0 +
-b0 *
-b0 )
-b0 (
-b0 '
-b0 &
-0%
+bx *
+bx )
+bx (
+x'
+x&
+bx %
 0$
-0#
+bx #
 b0 "
 b0 !
 $end
 #5
-1#
-#10
-0#
-b1010010110100101 &
-b1010010110100101 )
-b1 "
-b1 '
-1%
-#15
-b100000 -
-b10000000000000000000000000000011 ,
-1#
-#20
-0#
-0%
-#25
-1#
-#30
-0#
+b0 #
+b0 )
+b0 (
+b0 ,
+b0 %
+b0 *
+0'
+0&
 1$
+#10
+0$
+#15
+b11 0
+1$
+1&
+b10 #
+b10 )
+#20
+0$
+#25
+b110000 !
+b110000 -
+b11 "
+b11 +
+b11 /
+b0 0
+1$
+0&
+#30
+0$
 #35
-b1010010110100101 +
-1#
+b0 !
+b0 -
+b0 "
+b0 +
+b0 /
+b100000 3
+b10000000000000000000000000000011 2
+1$
+1'
+b1010101111001101 (
+b1010101111001101 ,
+b11 #
+b11 )
 #40
-0#
 0$
 #45
-1#
-b1010010110100101 !
-b1010010110100101 (
-b1010010110100101 *
-#50
-0#
-#55
-1#
-#60
-0#
-b101101001011010 &
-b101101001011010 )
-b10 "
-b10 '
-1%
-#65
-b0 +
-b100000 -
-1#
-#70
-0#
-0%
-#75
-1#
-b0 !
-b0 (
-b0 *
-#80
-0#
 1$
-#85
-b101101001011010 +
-1#
-#90
-0#
+0'
+#50
 0$
-#95
-1#
-b101101001011010 !
-b101101001011010 (
-b101101001011010 *
-#100
-0#
-#105
-1#
-#110
-0#
+#55
+b1010101111001101 0
+1$
+1&
+#60
+0$
+#65
+b0 0
+1$
+0&

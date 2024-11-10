@@ -1,13 +1,15 @@
-
 module memory_unit_tb;
+    // Inputs
     reg clk;
     reg isld;
     reg isst;
     reg [15:0] instr;
     reg [15:0] op2;
     reg [15:0] aluresult;
+
+    // Outputs
     wire [15:0] ldresult;
-    wire [18:0] rdvalmem;
+    wire [19:0] rdvalmem;
 
     // Instantiate the memory unit
     memory_unit uut (
@@ -22,55 +24,48 @@ module memory_unit_tb;
     );
 
     // Clock generation
-    initial begin
-        clk = 0;
-        forever #5 clk = ~clk;  // Toggle clock every 5 ns
+    always begin
+        #5 clk = ~clk; // 10 ns clock period
     end
 
-    // Initialize memory file and set up initial conditions
     initial begin
-        $dumpfile("memory_unit.vcd");
+        // Initialize inputs
+        $dumpfile("u1.vcd");
         $dumpvars(0, memory_unit_tb);
-        // Initialize control signals
-        #5; 
+        clk = 0;
         isld = 0;
         isst = 0;
-        instr = 16'b0;
-        op2 = 16'b0;
-        aluresult = 16'b0;
-
-        // Initial reset state to read memory
-        $display("Starting memory unit test...");
-
-        // Test load operation
-        #10;
-        aluresult = 16'h0002;  // Address to load from
+        instr = 16'h0000;
+        op2 = 16'h0000;
+        aluresult = 16'h0000;
+        #5;
+        // Load operation test
+        #10; // wait for some time
         isld = 1;
-        isst = 0;
+        aluresult = 16'h0002; // Load from address 5
+        instr = 16'h0701; // Example instruction with rd = instr[7:5] = 3
+        $display("Load Test - ldresult: %h, rdvalmem: %h", ldresult, rdvalmem);
         #10;
         isld = 0;
-        $display("Loaded data at address 0x0002: ldresult = %h, rdvalmem = %h", ldresult, rdvalmem);
 
-        // Test store operation
-        #10;
-        aluresult = 16'h0003;  // Address to store to
-        op2 = 16'hABCD;       // Data to store
+        // Check the result of ldresult and rdvalmem
+
+        // Store operation test
         isst = 1;
-        isld = 0;
+        aluresult = 16'h000A; // Store to address 10
+        op2 = 16'hAAAA; // Value to store
+        instr = 16'h1000; // Example instruction with rd = instr[7:5] = 4
         #10;
         isst = 0;
-        $display("Stored data 0xABCD at address 0x0003");
-
-        // Verify if the data was stored correctly by loading it back
-        #10;
-        aluresult = 16'h0003;
-        isld = 1;
-        isst = 0;
-        #10;
         isld = 0;
-        $display("Loaded data at address 0x0003 after store: ldresult = %h, rdvalmem = %h", ldresult, rdvalmem);
+        aluresult = 16'h0010;  // Example address
+        instr = 16'hA5A5;      // Example instruction (use bits [7:5] for rdvalmem)
 
-        // Add more test cases as needed
-        $finish;    
+        // Check the result of store operation
+        $display("Store Test - ldresult: %h, rdvalmem: %h", ldresult, rdvalmem);
+
+        // End the simulation
+        #150;
+        $stop;
     end
 endmodule

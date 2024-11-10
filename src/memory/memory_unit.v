@@ -2,6 +2,7 @@ module memory_unit (
     input wire clk,
     input wire isld,
     input wire isst,
+    input wire reset,
     input wire [15:0] instr,
     input wire [15:0] op2,
     input wire [15:0] aluresult,
@@ -24,7 +25,11 @@ module memory_unit (
     reg [19:0] result;
     reg [19:0] rdval;
     always @(posedge clk) begin
-        if (isld) begin
+        if(reset) begin
+            ld_reg <= 16'h0;
+            result <= 19'h0;
+        end
+        else if (isld) begin
             $readmemh("data_memory.hex", memory);
             ld_reg <= memory[aluresult];
             $readmemh("data_memory.hex", memory);

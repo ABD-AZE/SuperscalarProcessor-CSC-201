@@ -1,201 +1,110 @@
-# Keypoints
-1) instructions to be executed during negative edge of the clock
-2) If instructions depend on one another then do not execute them in parallel simply insert a bubble for one of them
-3) Resolve RAW hazards and control hazards (incase we go for branch prediction also)
-4) Can implement forwarding for RAW hazards to minimise stall cycles
-5) the problem is: we have to fetch two instructins from shared memory at the same time, this problem must be resolved through:
-   a. We have to put 2 PC's in order to add instructions in both pipelines simultaneously.
-   b. At once we can fetch 2 instructions and store them in IR1 and IR2 (2 instruction registers)
-6) The basic principle we are following is that before passing the two instructions into the two pipelines, we check whether the two instructions can be executed at the same time or not, i.e., we check for WAW, RAW, WAR all three hazards. If they are non-existent, we pass them in the two pipelines, or pass the instructions one by one in one pipeline and pass bubble(NOP) in the other.
-7) We first are trying only for structural and data hazard. If time permits, also for control hazard.
+# Superscalar Processor with Dual Pipelines
 
-## Harvard machine (dedicated instruction memory).
-There is a dedicated structure in the processor called the register file that contains all the 8 registers
+A **superscalar processor** is an advanced microprocessor capable of executing more than one instruction during a single clock cycle. This capability is achieved by incorporating **dual pipelines**, which allows simultaneous execution of multiple instructions, significantly improving the throughput of the processor. In our project, we have developed a superscalar processor that uses **dual pipelining** to support **instruction-level parallelism** and efficient hazard management.
 
-ISA DEGIGN.<br>
-16 bit instruction => IR size =16 bits. <br>
-No. of instructions = 16. <br>
-No. of Registers = 8.<br>
-The eighth register is the Flag Register (r7). <br>
-1-->equal<br>
-2-->greater than<br>
-memory size = 32 words<br>
-pc size = 16 bit<br>
-So, size of opcode = 4 bits.<br>
-Immediate bit size = 1 bit.<br>
-Size of register = 3 bits.<br>
-Memory Addressing: Word-addressable.<br>
-<br>
-The instruction format is divided as follows: <br>
-Opcode (4 bits)	|      I (1 bit)  	|      rd (3 bits)	|    rs1 (3 bits)      |     	rs2/imm (5 bits)
+## Approach to Superscalar Pipeline Design
 
-# ISA
-# 16 Instructions for the Custom Processor
+Our superscalar processor consists of two parallel pipelines that handle different stages of instruction execution: **Fetch, Decode, Execute, Memory Access, and Writeback**. The use of dual pipelining introduces challenges such as resource contention and **hazard management**, which we have addressed with a variety of techniques.
 
-## 1. NOP
-- **Opcode**: `0000`
-- **Example**: `NOP` (does nothing)
-- **Binary**: `0000_0_000_000_00000 → 0 0 0 0 0`
+The pipeline stages are defined as follows:
+- **Fetch Stage**: This stage is responsible for fetching the next instruction(s) from memory. In our design, the **instruction fetch unit** can fetch two instructions simultaneously, which are then dispatched to the respective pipelines.
+- **Decode Stage**: During decoding, instructions are parsed to determine their operation and the required operands. We employ a dual instruction decoder that can handle two instructions concurrently, ensuring that both pipelines are supplied with the necessary information.
+- **Execute Stage**: The execute stage performs arithmetic and logical operations. We have implemented an **ALU (Arithmetic Logic Unit)** for each pipeline, allowing parallel execution of independent operations.
+- **Memory Access Stage**: This stage handles data memory operations such as load and store. Both pipelines share access to a unified memory unit, with arbitration logic to manage simultaneous access requests.
+- **Writeback Stage**: In this final stage, the results of computations are written back to the register file. Dual write ports have been implemented to allow both pipelines to perform writeback operations concurrently.
 
-## 2. ADD rd, rs1, rs2
-add rd, rs1, (rs2/imm)
-- **Opcode**: `0001`
-- **I**: 0 (register-register)
-- **Example**: `ADD R1, R2, R3`
-- **Binary**: `0001_0_001_010_00011 → 1 0 1 2 3`
-- **I**: 1 (register-immediate)
-- **Example**: `ADD R1, R2, 5`
-- **Binary**: `0001_1_001_010_00101 → 1 1 1 2 5`
+## ISA Design
 
-## 3. SUB rd, rs1, rs2
-sub rd, rs1, (rs2/imm)
-- **Opcode**: `0010`
-- **I**: 0 (register-register)
-- **Example**: `SUB R4, R5, R6`
-- **Binary**: `0010_0_100_101_00110 → 2 0 4 5 6`
+Our superscalar processor is designed as a **Harvard machine** with dedicated instruction memory. The **instruction set architecture (ISA)** is tailored to support basic arithmetic, logical, and branching operations. The ISA specifications are as follows:
+- **16-bit instruction word** (IR size = 16 bits)
+- **Number of instructions**: 16
+- **Number of Registers**: 8 (with the eighth register being the Flag Register `r7`)
+- **Memory size**: 32 words, word-addressable
+- **Program counter (PC) size**: 16 bits
+- **Opcode size**: 4 bits
+- **Immediate bit size**: 1 bit
+- **Register size**: 3 bits
 
-- **I**: 1 (register-immediate)
-- **Example**: `SUB R4, R5, 7`
-- **Binary**: `0010_1_100_101_00111 → 2 1 4 5 7`
+### Instruction Format
+The instruction format is divided as follows:
 
-## 4. MUL rd, rs1, rs2
-sub rd, rs1, (rs2/imm)
-- **Opcode**: `0011`
-- **I**: 0 (register-register)
-- **Example**: `MUL R7, R0, R1`
-- **Binary**: `0011_0_111_000_00001 → 3 0 7 0 1`
+| Opcode (4 bits) | I (1 bit) | rd (3 bits) | rs1 (3 bits) | rs2/imm (5 bits) |
 
-- **I**: 1 (register-immediate)
-- **Example**: `MUL R7, R0, 3`
-- **Binary**: `0011_1_111_000_00011 → 3 1 7 0 3`
+The custom processor supports 16 instructions:
+1. **NOP** - No operation (Opcode: 0000)
+2. **ADD rd, rs1, rs2** - Add (Opcode: 0001)
+3. **SUB rd, rs1, rs2** - Subtract (Opcode: 0010)
+4. **MUL rd, rs1, rs2** - Multiply (Opcode: 0011)
+5. **LOAD rd, [rs1 + imm]** - Load (Opcode: 0100)
+6. **STORE rs1, [rs2 + imm]** - Store (Opcode: 0101)
+7. **CMP rs1, rs2** - Compare (Opcode: 0110)
+8. **MOV rd, rs1** - Move (Opcode: 0111)
+9. **OR rd, rs1, rs2** - Logical OR (Opcode: 1000)
+10. **AND rd, rs1, rs2** - Logical AND (Opcode: 1001)
+11. **NOT rd, rs1** - Logical NOT (Opcode: 1010)
+12. **LSL rd, rs1, rs2** - Logical Shift Left (Opcode: 1011)
+13. **JUMP target** - Unconditional Jump (Opcode: 1100)
+14. **LSR rd, rs1, rs2** - Logical Shift Right (Opcode: 1101)
+15. **BEQ target** - Branch if Equal (Opcode: 1110)
+16. **BGT target** - Branch if Greater (Opcode: 1111)
 
-## 5. LOAD rd, [rs1 + imm]
-ld rd, imm[rs1]
-- **Opcode**: `0100`
-- **I**: 1
-- **Example**: `LOAD R2, [R3 + 5]`
-- **Binary**: `0100_1_010_011_00101 → 4 1 2 3 5`
+## CPI Formula and Instruction-Level Parallelism
 
-## 6. STORE rs1, [rs2 + imm]
-st rd, imm[rs1]
-- **Opcode**: `0101`
-- **I**: 1
-- **Example**: `STORE R5, [R6 + 10]`
-- **Binary**: `0101_1_101_110_01010 → 5 1 5 6 A`
+The **cycles per instruction (CPI)** is a key metric in assessing processor performance. In an ideal scenario without hazards or stalls, our dual-pipeline processor aims to achieve a CPI of approximately **0.5**, since it can potentially execute two instructions per cycle. However, in practice, achieving this ideal CPI is challenging due to various factors such as pipeline hazards, resource limitations, and data dependencies between instructions.
 
-## 7. CMP rs1, rs2
-cmp rs1, (rs2/imm)
-- **Opcode**: `0110`
-- **I**: 0
-- **Example**: `CMP R1, R2`
-- **Binary**: `0110_0_001_000_00010 → B 0 1 0 2`
-  
-- **I**: 1
-- **Example**: `CMP R1, 3`
-- **Binary**: `0110_0_001_000_00011 → B 0 1 2 0`
+The **effective CPI** of the processor is calculated using the formula:
 
-## 8. MOV rd, rs1
-mov rd, (rs2/imm)
-- **Opcode**: `0111`
-- **I**: 0/1
-- **Example**: `MOV R2, R3`
-- **Binary**: `0111_0_010_011_00000 → 7 0 2 3 0`
+**CPI = (Total Cycles) / (Total Instructions Executed)**
 
-## 9. OR rd, rs1, rs2
-or rd, rs1, (rs2/imm)
-- **Opcode**: `1000`
-- **I**: 0 (register-register)
-- **Example**: `OR R5, R6, R7`
-- **Binary**: `1000_0_101_110_00111 → 8 0 5 6 7`
+In our dual-pipeline design, factors such as pipeline stalls, branch mispredictions, and data hazards increase the total cycle count, resulting in a higher CPI. Our implementation aims to minimize these stalls and maintain a CPI as close to 0.5 as possible by employing effective hazard management techniques.
 
-- **I**: 1 (register-immediate)
-- **Example**: `OR R5, R6, 7`
-- **Binary**: `1000_1_101_110_00111 → 8 1 5 6 7`
+## Hazard Management: Stalling and Data Forwarding
 
-## 10. AND rd, rs1, rs2
-and rd, rs1, (rs2/imm)
-- **Opcode**: `1001`
-- **I**: 0 (register-register)
-- **Example**: `AND R2, R3, R1`
-- **Binary**: `1001_0_010_011_00001 → 9 0 2 3 1`
+**Hazard management** in a pipelined processor refers to handling situations where instructions cannot execute simultaneously due to resource conflicts or data dependencies. We handle three primary types of hazards:
 
-- **I**: 1 (register-immediate)
-- **Example**: `AND R2, R3, 15`
-- **Binary**: `1001_1_010_011_01111 → 9 1 2 3 F`
+1. **Data Hazards**: These occur when instructions depend on the results of previous instructions that are still in the pipeline. To address data hazards, we have implemented **data forwarding** and **stalling** mechanisms.
+   - **Data Forwarding**: This technique is used to directly pass results from one pipeline stage to another without waiting for the normal writeback. We use a **relayer unit** to implement forwarding paths, ensuring that data is available for dependent instructions as soon as possible. The relayer unit monitors the pipeline stages and forwards data from the execute or memory stages to the decode stage when necessary, thereby reducing stalls.
+   - **Stalling**: If forwarding is not feasible, we introduce **pipeline stalls** to delay instruction execution until the necessary data is ready. Stalls are controlled using dedicated logic, which generates control signals to freeze the relevant pipeline stages while allowing other stages to continue, thereby minimizing the performance impact.
 
-## 11. NOT rd, rs1
-not rd, (rs2/imm)
-- **Opcode**: `1010`
-- **I**: 0
-- **Example**: `NOT R1, R2`
-- **Binary**: `1010_0_001_010_00000 → A 0 1 2 0`
+2. **Structural Hazards**: These occur when two instructions require the same hardware resource simultaneously. In our dual-pipeline design, **structural hazards** are minimized through resource duplication (e.g., dual ALUs) and arbitration logic for shared resources such as memory access units. The control unit ensures that resource contention is effectively managed to avoid unnecessary stalls.
 
-## 12. LSL rd, rs1, rs2
-lsl rd, rs1, (rs2/imm)
-- **Opcode**: `1011`
-- **I**: 1
-- **Example**: `LSL R3, R4, 3`
-- **Binary**: `1011_1_011_100_00011 → B 1 3 4 3`
+3. **Control Hazards**: Control hazards arise due to branch instructions that change the flow of execution. We use a **branch prediction mechanism** to mitigate control hazards. The branch predictor attempts to guess the outcome of branch instructions, allowing the pipeline to continue fetching subsequent instructions without waiting for the branch to be resolved. In case of a misprediction, the pipeline is flushed, and the correct instructions are fetched, which introduces a penalty.
 
-## 13. JUMP target
-jmp offset
-- **Opcode**: `1100`
-- **I**: 1
-- **Example**: `JUMP 15`
-- **Binary**: `1100_1_000_000_01111 → C 1 0 0 F`
+## Hazard Management Implementation (Referencing GitHub Repository)
 
-## 14. LSR rd, rs1, rs2
-lsr rd, rs1, (rs2/imm)
-- **Opcode**: `1101`
-- **I**: 1
-- **Example**: `LSR R3, R4, 2`
-- **Binary**: `1101_1_011_100_00010 → D 1 3 4 2`
+In our implementation, the **hazard detection** logic is tightly integrated with the pipeline architecture. We have utilized a combination of **buffers** and a **relayer unit** to manage data dependencies and control signal propagation across the two pipelines. Detailed information about the implementation can be found in our GitHub repository [here](https://github.com/ABD-AZE/SuperscalarProcessor-CSC-203/tree/main/src).
 
-## 15. BEQ target
-beq offset
-- **Opcode**: `1110`
-- **I**: 1
-- **Example**: `BEQ 15`
-- **Binary**: `1110_0_100_101_01000 → E 1 0 0 F`
+- **Buffers Before Pipelining**: To handle the synchronization of instructions between the dual pipelines, we utilize buffers before the decode and execute stages. These buffers act as holding units to manage the flow of instructions and reduce the risk of instruction conflicts. The buffers help in temporarily storing instruction and data values, allowing smoother transitions between stages and better coordination between the pipelines.
 
-## 16. BGT target
-bgt offset
-- **Opcode**: `1111`
-- **I**: 1
-- **Example**: `BGT 15`
-- **Binary**: `1111_1_000_000_01111 → F 1 0 0 F`
+- **Relayer Unit**: The **relayer unit** is used to detect data dependencies between the two pipelines and initiate data forwarding when applicable. This unit effectively ensures that dependent instructions do not lead to incorrect execution. The relayer unit also coordinates with the hazard detection logic to determine when stalling is required, providing a unified solution for managing data hazards.
+
+- **Control Unit**: The **control unit** plays a crucial role in managing the dual pipelines. It is responsible for generating control signals for instruction fetch, decode, execution, memory access, and writeback stages. The control unit also manages pipeline flushing in case of branch mispredictions, ensuring that both pipelines operate seamlessly without executing incorrect instructions.
+
+## Managing Dual Pipelines with Limited Resources
+
+Managing **dual pipelines** with limited resources requires careful handling of shared components, such as the **register file** and **memory units**. In our design:
+- We ensure that both pipelines access shared resources without conflicts by employing **resource arbitration** techniques. The arbitration logic monitors access requests and grants access in a fair manner to prevent deadlocks or starvation.
+- A dedicated **control unit** coordinates the simultaneous execution of instructions across the two pipelines, ensuring that resource contention is minimized while maximizing parallelism. The control unit also handles situations where both pipelines need to access the same memory location, ensuring that memory operations are performed correctly.
+- The **register file** has been designed to support dual read and write ports, allowing both pipelines to access the registers concurrently without causing data corruption. The register file includes additional control logic to handle simultaneous read and write requests, ensuring data consistency across both pipelines.
+- **Branch Prediction and Flushing**: To manage control hazards effectively, we have implemented a branch prediction unit that predicts the outcome of branch instructions to keep the pipeline full. When a misprediction occurs, the control unit flushes the incorrect instructions from the pipeline, minimizing the performance penalty.
+
+## Instruction Execution Principles
+
+- **Negative Clock Edge Execution**: Instructions are executed during the negative edge of the clock cycle to ensure synchronization across the dual pipelines.
+- **Dependency Checking Before Execution**: Before passing two instructions into the dual pipelines, we verify if they can be executed simultaneously by checking for **WAW (Write After Write)**, **RAW (Read After Write)**, and **WAR (Write After Read)** hazards. If any of these hazards exist, the instructions are either executed serially in a single pipeline while inserting a **bubble (NOP)** in the other pipeline.
+- **Instruction Fetch and Hazard Resolution**: We fetch two instructions from shared memory at the same time using **two Program Counters (PCs)** to add instructions to both pipelines simultaneously. The instructions are then stored in two **Instruction Registers (IR1 and IR2)** before they proceed into the pipelines. We resolve **RAW hazards** using data forwarding where possible and use **stalling** otherwise to minimize stall cycles.
+
+## Conclusion
+
+Our superscalar processor with dual pipelines aims to enhance processing speed by executing two instructions simultaneously. By leveraging techniques such as data forwarding, stalling, branch prediction, and resource arbitration, we effectively manage the complexities introduced by instruction-level parallelism and limited resource availability. The detailed implementation of these features can be reviewed in our GitHub repository, which contains the Verilog code, testbenches, and documentation outlining the pipeline architecture and hazard management logic.
+
+The **dual pipelining** approach, combined with advanced hazard management techniques, allows our processor to achieve significant improvements in throughput while maintaining correctness and efficiency. Our work demonstrates the potential of superscalar architectures in achieving high performance through parallel instruction execution and effective resource management.
 
 
+The ALU circuit diagram above shows the different functional units (Adder, Multiplier, Shift Unit, Logical Unit, and Mov Unit) and how the control signals (`isAdd`, `isSub`, `isMul`, `isCmp`, etc.) determine the operations performed on the operands `A` and `B`. The output from these units is directed to the `aluResult`, which is then used in subsequent stages of the pipeline.
 
----
 <img width="748" alt="image" src="https://github.com/user-attachments/assets/58e7a89c-6620-4e4d-b0ea-14ad207c8b47">
 
 <img width="958" alt="image" src="https://github.com/user-attachments/assets/8f5587b9-af28-47ba-9f41-c63ecfe9faa2">
 
-## Instruction Fetch (IF) 
-* Fetch an instruction from the instruction memory
-* Compute the address of the next instruction
-  
-## Operand Fetch (OF)
-* Decode the instruction (break it into fields)
-* Fetch the register operands from the register file
-* Compute the branch target (offset)
-* Compute the immediate (5 bits)
-* Generate control signals
-
-## Execute Stage (EX)
-* Contains an Arithmetic-Logical Unit (ALU)
-* This unit can perform all arithmetic operations ( add, sub, mul, cmp) and logical operations (and, or, not)
-* Contains the branch unit for computing the branch condition (beq, bgt)
-* Contains the flag register (updated by the cmp instruction)
-
-#### ALU Circuit Diagram
 <img width="603" alt="image" src="https://github.com/user-attachments/assets/8e0aa196-6381-4654-a46a-828382646f3b">
-
-
-## Memory Access Stage (MA)
-* Interfaces with the memory system
-* Executes a load or a store
-
-## Register Write Stage (RW)
-* Writes to the register file

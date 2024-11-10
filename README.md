@@ -16,9 +16,9 @@ ISA DEGIGN.<,br>
 16 bit instruction => IR size =16 bits. <br>
 No. of instructions = 16. <br>
 No. of Registers = 8.<br>
-The eighth register is the Flag Register (r7). 
-1-->equal
-2-->greater than
+The eighth register is the Flag Register (r7). <br>
+1-->equal<br>
+2-->greater than<br>
 memory size = 32 words<br>
 pc size = 16 bit<br>
 So, size of opcode = 4 bits.<br>

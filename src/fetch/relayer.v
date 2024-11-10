@@ -7,18 +7,16 @@ module relayer_unit(
     output wire isstall
 );
     parameter nop = 16'h0;
-    reg [15:0] buffer1 [0:2];    
-    reg [15:0] buffer2 [0:2];
+    reg [15:0] buffer1 [0:1];    
+    reg [15:0] buffer2 [0:1];
     reg [15:0] singinstr;
     integer i = 0;
     integer p=0;
     initial begin
         buffer1[0] = 16'b0;
         buffer1[1] = 16'b0;
-        buffer1[2] = 16'b0;
         buffer2[0] = 16'b0;
         buffer2[1] = 16'b0;
-        buffer2[2] = 16'b0;
         singinstr = 16'b0;
         issingleinstr_reg = 0;
         isstall_reg = 0;
@@ -43,7 +41,7 @@ module relayer_unit(
         end
         else if(instr1[15:12] == nop) begin
             instr1_out=nop;
-            for(i=0;i<3;i=i+1) begin
+            for(i=0;i<2;i=i+1) begin
                 if(buffer1[i][15:12]!=nop) begin 
                     if(!((buffer1[i][10:8]!=instr2[7:5]&&instr2[11]==1)||(buffer1[i][10:8]!=instr2[7:5]&&buffer1[i][10:8]!=instr2[4:2]&&instr2[11]==0))) begin
                         p=1;
@@ -51,7 +49,7 @@ module relayer_unit(
                 end
             end
             if(p==0) begin
-                for(i=0;i<3;i=i+1) begin
+                for(i=0;i<2;i=i+1) begin
                     if(buffer2[i][15:12]!=nop) begin
                         if(!((buffer2[i][10:8]!=instr2[7:5]&&instr2[11]==1)||(buffer2[i][10:8]!=instr2[7:5]&&buffer2[i][10:8]!=instr2[4:2]&&instr2[11]==0))) begin
                             p=1;
@@ -70,7 +68,7 @@ module relayer_unit(
             end
         end
         else begin
-            for(i=0;i<3;i=i+1) begin
+            for(i=0;i<2;i=i+1) begin
                 if(buffer1[i][15:12]!=nop) begin 
                     if(!((buffer1[i][10:8]!=instr1[7:5]&&instr1[11]==1)||(buffer1[i][10:8]!=instr1[7:5]&&buffer1[i][10:8]!=instr1[4:2]&&instr1[11]==0))) begin
                         p=1;
@@ -78,7 +76,7 @@ module relayer_unit(
                 end
             end
             if(p==0) begin
-                for(i=0;i<3;i=i+1) begin
+                for(i=0;i<2;i=i+1) begin
                     if(buffer2[i][15:12]!=nop) begin
                         if(!((buffer2[i][10:8]!=instr1[7:5]&&instr1[11]==1)||(buffer2[i][10:8]!=instr1[7:5]&&buffer2[i][10:8]!=instr1[4:2]&&instr1[11]==0))) begin
                             p=1;
@@ -105,7 +103,7 @@ module relayer_unit(
                     p=0;
                 end
                 if(p==0) begin
-                    for(i=0;i<3;i=i+1) begin
+                    for(i=0;i<2;i=i+1) begin
                         if(buffer2[i][15:12]!=nop) begin
                             if(!((buffer2[i][10:8]!=instr2[7:5]&&instr2[11]==1)||(buffer2[i][10:8]!=instr2[7:5]&&buffer2[i][10:8]!=instr2[4:2]&&instr2[11]==0))) begin
                                 p=1;
@@ -113,7 +111,7 @@ module relayer_unit(
                         end
                     end
                     if(p==0) begin
-                        for(i=0;i<3;i=i+1) begin
+                        for(i=0;i<2;i=i+1) begin
                             if(buffer1[i][15:12]!=nop) begin
                                 if(!((buffer1[i][10:8]!=instr2[7:5]&&instr2[11]==1)||(buffer1[i][10:8]!=instr2[7:5]&&buffer1[i][10:8]!=instr2[4:2]&&instr2[11]==0))) begin
                                     p=1;
@@ -133,7 +131,7 @@ module relayer_unit(
                 end
             end
         end
-        for(i=1;i<3;i=i+1) begin
+        for(i=1;i<2;i=i+1) begin
             buffer1[i] = buffer1[i-1];
             buffer2[i] = buffer2[i-1];
         end

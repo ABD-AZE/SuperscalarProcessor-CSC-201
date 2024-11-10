@@ -45,7 +45,7 @@ module relayer_unit(
             instr1_out=nop;
             for(i=0;i<3;i=i+1) begin
                 if(buffer1[i][15:12]!=nop) begin 
-                    if(!((buffer1[i][10:8]!=instr1[7:5]&&instr1[11]==1)||(buffer1[i][10:8]!=instr1[7:5]&&buffer1[i][10:8]!=instr1[4:2]&&instr1[11]==0))) begin
+                    if(!((buffer1[i][10:8]!=instr2[7:5]&&instr2[11]==1)||(buffer1[i][10:8]!=instr2[7:5]&&buffer1[i][10:8]!=instr2[4:2]&&instr2[11]==0))) begin
                         p=1;
                     end
                 end
@@ -53,7 +53,7 @@ module relayer_unit(
             if(p==0) begin
                 for(i=0;i<3;i=i+1) begin
                     if(buffer2[i][15:12]!=nop) begin
-                        if(!((buffer2[i][10:8]!=instr1[7:5]&&instr1[11]==1)||(buffer2[i][10:8]!=instr1[7:5]&&buffer2[i][10:8]!=instr1[4:2]&&instr1[11]==0))) begin
+                        if(!((buffer2[i][10:8]!=instr2[7:5]&&instr2[11]==1)||(buffer2[i][10:8]!=instr2[7:5]&&buffer2[i][10:8]!=instr2[4:2]&&instr2[11]==0))) begin
                             p=1;
                         end
                     end

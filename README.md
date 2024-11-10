@@ -189,6 +189,10 @@ bgt offset
 * Contains the branch unit for computing the branch condition (beq, bgt)
 * Contains the flag register (updated by the cmp instruction)
 
+#### ALU Circuit Diagram
+<img width="603" alt="image" src="https://github.com/user-attachments/assets/8e0aa196-6381-4654-a46a-828382646f3b">
+
+
 ## Memory Access Stage (MA)
 * Interfaces with the memory system
 * Executes a load or a store

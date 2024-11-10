@@ -1,5 +1,7 @@
 # Superscalar Processor with Dual Pipelines
 
+link to ppt: https://iitracin-my.sharepoint.com/:p:/g/personal/pradyuman_ss_cs_iitr_ac_in/EUMN85Z1f4lGgEfcnXlgKdsBRtsC8XhoxP2WSJ17jTh4TA?e=zTLUBG
+
 A **superscalar processor** is an advanced microprocessor capable of executing more than one instruction during a single clock cycle. This capability is achieved by incorporating **dual pipelines**, which allows simultaneous execution of multiple instructions, significantly improving the throughput of the processor. In our project, we have developed a superscalar processor that uses **dual pipelining** to support **instruction-level parallelism** and efficient hazard management.
 
 ## Approach to Superscalar Pipeline Design

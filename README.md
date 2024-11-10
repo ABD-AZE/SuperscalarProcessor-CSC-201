@@ -12,7 +12,7 @@
 ## Harvard machine (dedicated instruction memory).
 There is a dedicated structure in the processor called the register file that contains all the 8 registers
 
-ISA DEGIGN.<,br>
+ISA DEGIGN.<br>
 16 bit instruction => IR size =16 bits. <br>
 No. of instructions = 16. <br>
 No. of Registers = 8.<br>

@@ -92,12 +92,14 @@ cmp rs1, (rs2/imm)
 - **Binary**: `0110_0_001_000_00011 → B 0 1 2 0`
 
 ## 8. MOV rd, rs1
+mov rd, (rs2/imm)
 - **Opcode**: `0111`
-- **I**: 0
+- **I**: 0/1
 - **Example**: `MOV R2, R3`
 - **Binary**: `0111_0_010_011_00000 → 7 0 2 3 0`
 
 ## 9. OR rd, rs1, rs2
+or rd, rs1, (rs2/imm)
 - **Opcode**: `1000`
 - **I**: 0 (register-register)
 - **Example**: `OR R5, R6, R7`
@@ -108,6 +110,7 @@ cmp rs1, (rs2/imm)
 - **Binary**: `1000_1_101_110_00111 → 8 1 5 6 7`
 
 ## 10. AND rd, rs1, rs2
+and rd, rs1, (rs2/imm)
 - **Opcode**: `1001`
 - **I**: 0 (register-register)
 - **Example**: `AND R2, R3, R1`
@@ -118,36 +121,42 @@ cmp rs1, (rs2/imm)
 - **Binary**: `1001_1_010_011_01111 → 9 1 2 3 F`
 
 ## 11. NOT rd, rs1
+not rd, (rs2/imm)
 - **Opcode**: `1010`
 - **I**: 0
 - **Example**: `NOT R1, R2`
 - **Binary**: `1010_0_001_010_00000 → A 0 1 2 0`
 
 ## 12. LSL rd, rs1, rs2
+lsl rd, rs1, (rs2/imm)
 - **Opcode**: `1011`
 - **I**: 1
 - **Example**: `LSL R3, R4, 3`
 - **Binary**: `1011_1_011_100_00011 → B 1 3 4 3`
 
 ## 13. JUMP target
+jmp offset
 - **Opcode**: `1100`
 - **I**: 1
 - **Example**: `JUMP 15`
 - **Binary**: `1100_1_000_000_01111 → C 1 0 0 F`
 
 ## 14. LSR rd, rs1, rs2
+lsr rd, rs1, (rs2/imm)
 - **Opcode**: `1101`
 - **I**: 1
 - **Example**: `LSR R3, R4, 2`
 - **Binary**: `1101_1_011_100_00010 → D 1 3 4 2`
 
 ## 15. BEQ target
+beq offset
 - **Opcode**: `1110`
 - **I**: 1
 - **Example**: `BEQ 15`
 - **Binary**: `1110_0_100_101_01000 → E 1 0 0 F`
 
 ## 16. BGT target
+bgt offset
 - **Opcode**: `1111`
 - **I**: 1
 - **Example**: `BGT 15`

@@ -2,7 +2,7 @@ module writeback_unit(
     input wire clk,
     input wire iswb,
     input wire isld,
-    input wire [2:0] rd,
+    input wire [15:0] instr,
     input wire [15:0] ldresult,
     input wire [15:0] aluresult
 );
@@ -20,7 +20,7 @@ module writeback_unit(
             end else begin
                 result = aluresult;
             end
-            reg_file[rd] = result;
+            reg_file[instr[7:5]] = result;
         end
     end
     always @(*) begin

@@ -42,7 +42,7 @@ module memory_unit (
             $readmemh("data_memory.hex", memory);
             ld_reg <= memory[aluresult];
             $readmemh("data_memory.hex", memory);
-            result <= {1'h0,memory[aluresult],instr[7:5]};
+            result <= {1'h0,memory[aluresult],instr[10:8]};
             // $display("rdval = %h", result);
         end
         else if (isst) begin
@@ -60,7 +60,7 @@ module memory_unit (
         else begin 
             ld_reg <= 16'h0000;
             // result_1 = {aluresult, instr[7:5]};
-            result <= {1'h0,aluresult, instr[7:5]};
+            result <= {1'h0,aluresult, instr[10:8]};
             // $display("rdval = %h", result);
         end
         // $display("ldresult = %h", ld);

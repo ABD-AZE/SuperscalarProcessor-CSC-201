@@ -157,7 +157,7 @@ module top_module();
         .reset(reset),
         .is_branch_taken(is_branch_taken),
         .stall(stall),
-        .opcode(opcode1),
+        .instr(instr1relayerdecode),
         .isadd(isadd1),
         .issub(issub1),
         .ismul(ismul1),
@@ -328,7 +328,7 @@ module top_module();
         .reset(reset),
         .is_branch_taken(is_branch_taken),
         .stall(stall),
-        .opcode(opcode2),
+        .instr(instr2relayerdecode),
         .isadd(isadd2),
         .issub(issub2),
         .ismul(ismul2),
@@ -363,7 +363,7 @@ module top_module();
     wire [15:0] ldresult2;
     wire [15:0] instralumem2;
     wire isldalu2,isstalu2,iswbalu2;
-    wire [15:0] op21alu2; 
+    wire [15:0] op22alu2; 
     alu alu2(
         .clk(clk),
         .reset(reset),
@@ -378,7 +378,7 @@ module top_module();
         .aluresult(aluresult2),
         .isld1(isldalu2),
         .isst1(isstalu2),
-        .op2_out(op21alu2),
+        .op2_out(op22alu2),
         .iswb_out(iswbalu2),
         .instrout(instralumem2)
     );

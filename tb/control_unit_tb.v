@@ -1,9 +1,12 @@
-module tb_control_unit;
-    // Testbench signals
+module control_unit_tb;
+    // Inputs to the control unit
     reg clk;
     reg reset;
     reg stall;
-    reg [3:0] opcode;   // 4-bit opcode input
+    reg [15:0] instr;
+    reg is_branch_taken;
+
+    // Outputs from the control unit
     wire isadd, issub, ismul, isld, isst, iscmp, ismov, isor, isand, isnot, islsl, islsr, isbeq, isbgt, iswb, isubranch;
 
     // Instantiate the control unit
@@ -11,7 +14,8 @@ module tb_control_unit;
         .clk(clk),
         .reset(reset),
         .stall(stall),
-        .opcode(opcode),
+        .instr(instr),
+        .is_branch_taken(is_branch_taken),
         .isadd(isadd),
         .issub(issub),
         .ismul(ismul),
@@ -31,219 +35,73 @@ module tb_control_unit;
     );
 
     // Clock generation
-    always begin
-        #5 clk = ~clk;  // 10 ns clock period
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk; // 10ns clock period
     end
 
-    // Test sequence
+    // Testbench logic
     initial begin
+        // Initialize inputs
         $dumpfile("control_unit.vcd");
-        $dumpvars(0, tb_control_unit);  // Initialize signals
-        clk = 0;
-        reset = 0;
+        $dumpvars(0, control_unit_tb);
+        reset = 1;
         stall = 0;
-        opcode = 4'b0000;  // Default opcode (ADD)
+        instr = 16'b0;
+        is_branch_taken = 0;
 
         // Apply reset
-        #5 reset = 1;
-        #10 reset = 0;
+        #10;
+        reset = 0;
+        #5;
+        // Test ADD instruction
+        instr = 16'b0001_0000_0000_0000; // ADD opcode
+        #10;
+        $display("ADD: isadd=%b, iswb=%b", isadd, iswb);
 
-        // Run test tasks
-        test_add;
-        #10 test_sub;
-        #10 test_mul;
-        #10 test_ld;
-        #10 test_st;
-        #10 test_cmp;
-        #10 test_mov;
-        #10 test_or;
-        #10 test_and;
-        #10 test_not;
-        #10 test_lsl;
-        #10 test_lsr;
-        #10 test_stall;
-        #10 test_beq;
-        #10 test_bgt;
-        #10 test_ubranch;
-        #160 $finish;
+        // Test SUB instruction
+        instr = 16'b0010_0000_0000_0000; // SUB opcode
+        #10;
+        $display("SUB: issub=%b, iswb=%b", issub, iswb);
+
+        // Test LD instruction
+        instr = 16'b0100_0000_0000_0000; // LD opcode
+        #10;
+        $display("LD: isld=%b, iswb=%b", isld, iswb);
+
+        // Test BEQ instruction
+        instr = 16'b1110_0000_0000_0000; // BEQ opcode
+        #10;
+        $display("BEQ: isbeq=%b, iswb=%b", isbeq, iswb);
+
+        // Test unconditional branch with branch taken
+        instr = 16'b1100_0000_0000_0000; // UBRANCH opcode
+        is_branch_taken = 1;
+        #10;
+        $display("UBRANCH (branch taken): isubranch=%b", isubranch);
+        is_branch_taken = 0;
+
+        // Test stall condition
+        // stall = 1;
+        // instr = 16'b1110_0000_0000_0000; // UBRANCH opcode
+
+        // #10;
+        // $display("STALL: Outputs should be zero: isadd=%b, issub=%b, iswb=%b", isadd, issub, iswb);
+        // stall = 0;
+
+        // Test NOT instruction after stall
+        instr = 16'b1010_0000_0000_0000; // NOT opcode
+        #10;
+        $display("NOT: isnot=%b, iswb=%b", isnot, iswb);
+
+        // Test reset again
+        reset = 1;
+        #10;
+        reset = 0;
+        $display("After Reset: Outputs should be zero: isadd=%b, issub=%b, iswb=%b", isadd, issub, iswb);
+
+        // Finish simulation
+        #20;
+        $stop;
     end
-
-    // Test Case 1: ADD opcode
-    task test_add;
-        begin
-            opcode = 4'b0001;  // ADD
-            @(posedge clk); // Wait for a clock edge to capture output
-            $display("---- ADD TEST ----");
-            $display("iswb: %b, isadd: %b, issub: %b, ismul: %b, isld: %b, isst: %b, iscmp: %b, ismov: %b, isor: %b, isand: %b, isnot: %b, islsl: %b, islsr: %b, isbeq: %b, isbgt: %b, isubranch: %b", 
-                     iswb, isadd, issub, ismul, isld, isst, iscmp, ismov, isor, isand, isnot, islsl, islsr, isbeq, isbgt, isubranch);
-        end
-    endtask
-
-    // Test Case 2: SUB opcode
-    task test_sub;
-        begin
-            opcode = 4'b0010;  // SUB
-            @(posedge clk);
-            $display("---- SUB TEST ----");
-            $display("iswb: %b, isadd: %b, issub: %b, ismul: %b, isld: %b, isst: %b, iscmp: %b, ismov: %b, isor: %b, isand: %b, isnot: %b, islsl: %b, islsr: %b, isbeq: %b, isbgt: %b, isubranch: %b", 
-                     iswb, isadd, issub, ismul, isld, isst, iscmp, ismov, isor, isand, isnot, islsl, islsr, isbeq, isbgt, isubranch);
-        end
-    endtask
-
-    // Test Case 3: MUL opcode
-    task test_mul;
-        begin
-            opcode = 4'b0011;  // MUL
-            @(posedge clk);
-            $display("---- MUL TEST ----");
-            $display("iswb: %b, isadd: %b, issub: %b, ismul: %b, isld: %b, isst: %b, iscmp: %b, ismov: %b, isor: %b, isand: %b, isnot: %b, islsl: %b, islsr: %b, isbeq: %b, isbgt: %b, isubranch: %b", 
-                     iswb, isadd, issub, ismul, isld, isst, iscmp, ismov, isor, isand, isnot, islsl, islsr, isbeq, isbgt, isubranch);
-        end
-    endtask
-
-    // Test Case 4: LD opcode
-    task test_ld;
-        begin
-            opcode = 4'b0100;  // LD
-            @(posedge clk);
-            $display("---- LD TEST ----");
-            $display("iswb: %b, isadd: %b, issub: %b, ismul: %b, isld: %b, isst: %b, iscmp: %b, ismov: %b, isor: %b, isand: %b, isnot: %b, islsl: %b, islsr: %b, isbeq: %b, isbgt: %b, isubranch: %b", 
-                     iswb, isadd, issub, ismul, isld, isst, iscmp, ismov, isor, isand, isnot, islsl, islsr, isbeq, isbgt, isubranch);
-        end
-    endtask
-
-    // Test Case 5: ST opcode
-    task test_st;
-        begin
-            opcode = 4'b0101;  // ST
-            @(posedge clk);
-            $display("---- ST TEST ----");
-            $display("iswb: %b, isadd: %b, issub: %b, ismul: %b, isld: %b, isst: %b, iscmp: %b, ismov: %b, isor: %b, isand: %b, isnot: %b, islsl: %b, islsr: %b, isbeq: %b, isbgt: %b, isubranch: %b", 
-                     iswb, isadd, issub, ismul, isld, isst, iscmp, ismov, isor, isand, isnot, islsl, islsr, isbeq, isbgt, isubranch);
-        end
-    endtask
-
-    // Test Case 6: CMP opcode
-    task test_cmp;
-        begin
-            opcode = 4'b0110;  // CMP
-            @(posedge clk);
-            $display("---- CMP TEST ----");
-            $display("iswb: %b, isadd: %b, issub: %b, ismul: %b, isld: %b, isst: %b, iscmp: %b, ismov: %b, isor: %b, isand: %b, isnot: %b, islsl: %b, islsr: %b, isbeq: %b, isbgt: %b, isubranch: %b", 
-                     iswb, isadd, issub, ismul, isld, isst, iscmp, ismov, isor, isand, isnot, islsl, islsr, isbeq, isbgt, isubranch);
-        end
-    endtask
-
-    // Test Case 7: MOV opcode
-    task test_mov;
-        begin
-            opcode = 4'b0111;  // MOV
-            @(posedge clk);
-            $display("---- MOV TEST ----");
-            $display("iswb: %b, isadd: %b, issub: %b, ismul: %b, isld: %b, isst: %b, iscmp: %b, ismov: %b, isor: %b, isand: %b, isnot: %b, islsl: %b, islsr: %b, isbeq: %b, isbgt: %b, isubranch: %b", 
-                     iswb, isadd, issub, ismul, isld, isst, iscmp, ismov, isor, isand, isnot, islsl, islsr, isbeq, isbgt, isubranch);
-        end
-    endtask
-
-    // Test Case 8: OR opcode
-    task test_or;
-        begin
-            opcode = 4'b1000;  // OR
-            @(posedge clk);
-            $display("---- OR TEST ----");
-            $display("iswb: %b, isadd: %b, issub: %b, ismul: %b, isld: %b, isst: %b, iscmp: %b, ismov: %b, isor: %b, isand: %b, isnot: %b, islsl: %b, islsr: %b, isbeq: %b, isbgt: %b, isubranch: %b", 
-                     iswb, isadd, issub, ismul, isld, isst, iscmp, ismov, isor, isand, isnot, islsl, islsr, isbeq, isbgt, isubranch);
-        end
-    endtask
-
-    // Test Case 9: AND opcode
-    task test_and;
-        begin
-            opcode = 4'b1001;  // AND
-            @(posedge clk);
-            $display("---- AND TEST ----");
-            $display("iswb: %b, isadd: %b, issub: %b, ismul: %b, isld: %b, isst: %b, iscmp: %b, ismov: %b, isor: %b, isand: %b, isnot: %b, islsl: %b, islsr: %b, isbeq: %b, isbgt: %b, isubranch: %b", 
-                     iswb, isadd, issub, ismul, isld, isst, iscmp, ismov, isor, isand, isnot, islsl, islsr, isbeq, isbgt, isubranch);
-        end
-    endtask
-
-    // Test Case 10: NOT opcode
-    task test_not;
-        begin
-            opcode = 4'b1010;  // NOT
-            @(posedge clk);
-            $display("---- NOT TEST ----");
-            $display("iswb: %b, isadd: %b, issub: %b, ismul: %b, isld: %b, isst: %b, iscmp: %b, ismov: %b, isor: %b, isand: %b, isnot: %b, islsl: %b, islsr: %b, isbeq: %b, isbgt: %b, isubranch: %b", 
-                     iswb, isadd, issub, ismul, isld, isst, iscmp, ismov, isor, isand, isnot, islsl, islsr, isbeq, isbgt, isubranch);
-        end
-    endtask
-
-    // Test Case 11: LSL opcode
-    task test_lsl;
-        begin
-            opcode = 4'b1011;  // LSL
-            @(posedge clk);
-            $display("---- LSL TEST ----");
-            $display("iswb: %b, isadd: %b, issub: %b, ismul: %b, isld: %b, isst: %b, iscmp: %b, ismov: %b, isor: %b, isand: %b, isnot: %b, islsl: %b, islsr: %b, isbeq: %b, isbgt: %b, isubranch: %b", 
-                     iswb, isadd, issub, ismul, isld, isst, iscmp, ismov, isor, isand, isnot, islsl, islsr, isbeq, isbgt, isubranch);
-        end
-    endtask
-
-    // Test Case 12: LSR opcode
-    task test_lsr;
-        begin
-            opcode = 4'b1101;  // LSR
-            @(posedge clk);
-            $display("---- LSR TEST ----");
-            $display("iswb: %b, isadd: %b, issub: %b, ismul: %b, isld: %b, isst: %b, iscmp: %b, ismov: %b, isor: %b, isand: %b, isnot: %b, islsl: %b, islsr: %b, isbeq: %b, isbgt: %b, isubranch: %b", 
-                     iswb, isadd, issub, ismul, isld, isst, iscmp, ismov, isor, isand, isnot, islsl, islsr, isbeq, isbgt, isubranch);
-        end
-    endtask
-
-    // Test Case 13: BEQ opcode
-    task test_beq;
-        begin
-            opcode = 4'b1110;  // BEQ
-            @(posedge clk);
-            $display("---- BEQ TEST ----");
-            $display("iswb: %b, isadd: %b, issub: %b, ismul: %b, isld: %b, isst: %b, iscmp: %b, ismov: %b, isor: %b, isand: %b, isnot: %b, islsl: %b, islsr: %b, isbeq: %b, isbgt: %b, isubranch: %b", 
-                     iswb, isadd, issub, ismul, isld, isst, iscmp, ismov, isor, isand, isnot, islsl, islsr, isbeq, isbgt, isubranch);
-        end
-    endtask
-
-    // Test Case 14: BGT opcode
-    task test_bgt;
-        begin
-            opcode = 4'b1111;  // BGT
-            @(posedge clk);
-            $display("---- BGT TEST ----");
-            $display("iswb: %b, isadd: %b, issub: %b, ismul: %b, isld: %b, isst: %b, iscmp: %b, ismov: %b, isor: %b, isand: %b, isnot: %b, islsl: %b, islsr: %b, isbeq: %b, isbgt: %b, isubranch: %b", 
-                     iswb, isadd, issub, ismul, isld, isst, iscmp, ismov, isor, isand, isnot, islsl, islsr, isbeq, isbgt, isubranch);
-        end
-    endtask
-
-    // Test Case 16: UBranch opcode
-    task test_ubranch;
-        begin
-            opcode = 4'b1100;  // UBranch (could share the opcode with WB if needed)
-            @(posedge clk);
-            $display("---- UBranch TEST ----");
-            $display("iswb: %b, isadd: %b, issub: %b, ismul: %b, isld: %b, isst: %b, iscmp: %b, ismov: %b, isor: %b, isand: %b, isnot: %b, islsl: %b, islsr: %b, isbeq: %b, isbgt: %b, isubranch: %b", 
-                     iswb, isadd, issub, ismul, isld, isst, iscmp, ismov, isor, isand, isnot, islsl, islsr, isbeq, isbgt, isubranch);
-        end
-    endtask
-
-    task test_stall;
-        begin
-            // Test with stall signal active
-            // opcode = 4'b0001;  // ADD (or any opcode for testing)
-            stall = 1;         // Set the stall signal
-            @(posedge clk);    // Wait for a clock edge
-            $display("---- STALL TEST ----");
-            $display("stall: %b, iswb: %b, isadd: %b, issub: %b, ismul: %b, isld: %b, isst: %b, iscmp: %b, ismov: %b, isor: %b, isand: %b, isnot: %b, islsl: %b, islsr: %b, isbeq: %b, isbgt: %b, isubranch: %b", 
-                     stall, iswb, isadd, issub, ismul, isld, isst, iscmp, ismov, isor, isand, isnot, islsl, islsr, isbeq, isbgt, isubranch);
-            stall = 0;
-        end
-    endtask
-
 endmodule

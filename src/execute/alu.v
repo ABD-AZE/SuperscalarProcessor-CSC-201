@@ -1,49 +1,34 @@
-
-// update the flags register and do the required calculations
 module alu(
     input wire reset,
     input wire clk,
     input wire [11:0] alusignals,
     input wire [15:0] instrin,
-    /*
-        isadd
-        isld
-        isst
-        issub
-        ismul
-        iscmp
-        ismov
-        isor
-        isand
-        isnot
-        islsl
-        islsr
-    */  
     input wire [15:0] op1,
     input wire [15:0] op2,
     input wire [4:0] immx,
+    input wire iswb,
     input wire isimmediate,
+    input wire is_branch_takenin,
     output wire [15:0] aluresult,
     output wire [15:0] instrout,
-    input wire is_branch_takenin
+    output wire isld1,
+    output wire isst1,
+    output wire [15:0] op2_out,
+    output wire iswb_out
 );
-    integer file;
-    integer i;
+
+    // Internal Registers
+    reg [15:0] op2_1;
+    reg isld1_1;
+    reg isst1_1;
+    reg iswb1_reg;
+    reg iswb1_1;
     reg [15:0] reg_file [7:0];
     reg [15:0] A;
     reg [15:0] B;
-    wire isadd;
-    wire isld;
-    wire isst;
-    wire issub;
-    wire ismul;
-    wire iscmp;
-    wire ismov;
-    wire isor;
-    wire isand;
-    wire isnot;
-    wire islsl;
-    wire islsr;
+    wire isadd, issub, ismul, isld, isst, iscmp, ismov, isor, isand, isnot, islsl, islsr;
+
+    // ALU Control Signals
     assign isadd = alusignals[0];
     assign isld = alusignals[1];
     assign isst = alusignals[2];
@@ -56,53 +41,32 @@ module alu(
     assign isnot = alusignals[9];
     assign islsl = alusignals[10];
     assign islsr = alusignals[11];
-    reg isadd_reg;
-    reg isld_reg;
-    reg isst_reg;
-    reg issub_reg;
-    reg ismul_reg;
-    reg iscmp_reg;
-    reg ismov_reg;
-    reg isor_reg;
-    reg isand_reg;
-    reg isnot_reg;
-    reg islsl_reg;
-    reg islsr_reg;
+
+    // Internal State
+    reg isadd_reg, isld_reg, isst_reg, issub_reg, ismul_reg, iscmp_reg, ismov_reg, isor_reg, isand_reg, isnot_reg, islsl_reg, islsr_reg;
     reg isimmediate_reg;
-    reg [15:0]op1_reg;
-    reg [15:0]op2_reg;
-    reg [4:0]immx_reg;
+    reg [15:0] op1_reg, op2_reg;
+    reg [4:0] immx_reg;
     reg [15:0] result;
-    reg instrout_reg;
-    reg instrout_reg1;
-    reg [15:0]result_1;
+    reg [15:0] instrout_reg, instrout_reg1;
+    reg [15:0] result_1;
+
+    // Initialize Internal Registers
     initial begin
         $readmemh("registers.hex", reg_file);
-        isadd_reg = 1'b0;
-        isld_reg = 1'b0;
-        isst_reg = 1'b0;
-        issub_reg = 1'b0;
-        ismul_reg = 1'b0;
-        iscmp_reg = 1'b0;
-        ismov_reg = 1'b0;
-        isor_reg = 1'b0;
-        isand_reg = 1'b0;
-        isnot_reg = 1'b0;
-        islsl_reg = 1'b0;
-        islsr_reg = 1'b0;
-        isimmediate_reg = 1'b0;
-        op1_reg = 16'b0;
-        op2_reg = 16'b0;
-        immx_reg = 5'b0;
-        instrout_reg = 16'b0;
-        instrout_reg1 = 16'b0;
+        isadd_reg = 0; isld_reg = 0; isst_reg = 0; issub_reg = 0; ismul_reg = 0;
+        iscmp_reg = 0; ismov_reg = 0; isor_reg = 0; isand_reg = 0; isnot_reg = 0;
+        islsl_reg = 0; islsr_reg = 0; isimmediate_reg = 0;
+        op1_reg = 0; op2_reg = 0; immx_reg = 0; instrout_reg = 0; instrout_reg1 = 0;
     end
+
+    // ALU Logic
     always @(posedge clk) begin
-        if(is_branch_takenin || reset) begin
+        if (is_branch_takenin || reset) begin
             result <= 16'h0;
             instrout_reg <= 16'h0;
-        end
-        else begin
+        end else begin
+            // Operand Selection
             if (isimmediate_reg) begin
                 A <= op1;
                 B <= immx;
@@ -110,58 +74,29 @@ module alu(
                 A <= op1;
                 B <= op2;
             end
-            if (isadd_reg) begin
-                result <= A + B;
-            end else if (isld_reg) begin
-                result <= A + B;
-            end else if (isst_reg) begin
-                result <= A + B;
-            end else if (issub_reg) begin
-                result <= A - B;
-            end else if (ismul_reg) begin
-                result <= A * B;
-            end else if (iscmp_reg) begin // 1 for equal, 2 for greater than  , 0 for less than 
-                if (A == B) begin
-                    result <= 16'b1;
-                    reg_file[7] = 16'b1;
-                end else if (A>B) begin
-                    result <= 16'b0;
-                    reg_file[7] = 16'h2;
-                end else begin
-                    result <= 16'b0;
-                    reg_file[7] = 16'h0;
-                end
-                file = $fopen("registers.hex", "w");
-                if (file) begin
-                    // $display("Writing modified data...");
-                    // Write each modified memory value to the new file
-                    for (i = 0; i < 8; i = i + 1) begin
-                        $fwrite(file, "%h\n", reg_file[i]);  // Write as hexadecimal
-                        // $display("Data written to register file successfully. %h",reg_file[i]);
-                    end
-                    $fclose(file);  // Close the file
-                    // $display("Data written to register file successfully.");
-                end else begin
-                    // $display("Error: Could not open file for writing.");
-                end
-            end else if (ismov_reg) begin
-                result <= B;
-            end else if (isor_reg) begin
-                result <= A | B;
-            end else if (isand_reg) begin
-                result <= A & B;
-            end else if (isnot_reg) begin
-                result <= ~A;
-            end else if (islsl_reg) begin
-                result <= A << B;
-            end else if (islsr_reg) begin
-                result <= A >> B;
-            end else begin
-                result <= 16'b0;
-            end
+
+            // Perform ALU Operation
+            if (isadd_reg) result <= A + B;
+            else if (issub_reg) result <= A - B;
+            else if (ismul_reg) result <= A * B;
+            else if (iscmp_reg) begin
+                if (A == B) result <= 16'b1;
+                else if (A > B) result <= 16'h2;
+                else result <= 16'h0;
+            end else if (ismov_reg) result <= B;
+            else if (isor_reg) result <= A | B;
+            else if (isand_reg) result <= A & B;
+            else if (isnot_reg) result <= ~A;
+            else if (islsl_reg) result <= A << B;
+            else if (islsr_reg) result <= A >> B;
+            else result <= 16'b0;
         end
+
+        // Update Internal State
         isadd_reg <= isadd;
         isld_reg <= isld;
+        isadd_reg <= isst;
+        isadd_reg <= isld;
         isst_reg <= isst;
         issub_reg <= issub;
         ismul_reg <= ismul;
@@ -175,12 +110,25 @@ module alu(
         isimmediate_reg <= isimmediate;
         op1_reg <= op1;
         op2_reg <= op2;
-        if(is_branch_takenin==0) begin    
-            instrout_reg <= instrin;
-        end
+
+        // Handle Branch Taken
+        if (!is_branch_takenin) instrout_reg <= instrin;
+
         instrout_reg1 <= instrout_reg;
-        result_1<=result;
+        result_1 <= result;
+        op2_1 <= op2_reg;
+        isld1_1 <= isld_reg;
+        isst1_1 <= isst_reg;
+        iswb1_reg <= iswb;
+        iswb1_1 <= iswb1_reg;
     end
+
+    // Output Assignments
     assign aluresult = result;
     assign instrout = instrout_reg1;
+    assign op2_out = op2_1;
+    assign iswb_out = iswb1_1;
+    assign isld1 = isld1_1;
+    assign isst1 = isst1_1;
+
 endmodule

@@ -111,6 +111,7 @@ module top_module();
         .op2(op21),
         .instrout(instrdecodealu1),
         .imm_flag(immflag1)
+        
     );
     // control unit
 
@@ -235,6 +236,8 @@ module top_module();
     // input wire isimmediate,
     // output wire [15:0] aluresult,
     // output wire [15:0] instrout
+    wire isldalu1,isstalu1,iswbalu1;
+    wire [15:0] op21alu1; 
     wire [15:0] instralumem1;
     alu alu1(
         .clk(clk),
@@ -246,7 +249,12 @@ module top_module();
         .op2(op21),
         .immx(imm1),
         .isimmediate(imm_flag1),
+        .iswb(iswb1),
         .aluresult(aluresult1),
+        .isld1(isldalu1),
+        .isst1(isstalu1),
+        .op2_out(op21alu1),
+        .iswb_out(iswbalu1),
         .instrout(instralumem1)
     );
     //memory 
@@ -261,25 +269,32 @@ module top_module();
     // output wire [19:0] rdvalmem
     wire [15:0] ldresult1;
     wire [15:0] aluresult1;
+    wire [15:0] aluresultmem1,instrmemwb1;
+    wire isldmem1,iswbmem1;
     memory_unit memory_unit1(
         .clk(clk),
         .reset(reset),
-        .isld(isld1),
-        .isst(isst1),
+        .isld(isldalu1),
+        .isst(isstalu1),
+        .iswb(iswbalu1),
         .instr(instralumem1),
-        .op2(op21),
+        .op2(op21alu1),
         .aluresult(aluresult1),
         .ldresult(ldresult1),
-        .rdvalmem(rdvalmem1)
+        .rdvalmem(rdvalmem1),
+        .aluresult_out(aluresultmem1),
+        .isld_out(isldmem1),
+        .iswb_out(iswbmem1),
+        .instr_out(instrmemwb1)
     );
     //writeback
     writeback_unit writeback_unit1(
         .clk(clk),
-        .iswb(iswb1),
-        .isld(isld1),
-        .rd(rdvalmem1[2:0]),
+        .iswb(iswbmem1),
+        .isld(isldmem1),
+        .instr(instrmemwb1),
         .ldresult(ldresult1),
-        .aluresult(aluresult1)
+        .aluresult(aluresultmem1)
     );
 
     // pipeline 2
@@ -347,38 +362,52 @@ module top_module();
     wire [15:0] aluresult2;
     wire [15:0] ldresult2;
     wire [15:0] instralumem2;
+    wire isldalu2,isstalu2,iswbalu2;
+    wire [15:0] op21alu2; 
     alu alu2(
         .clk(clk),
         .reset(reset),
-        .is_branch_takenin(is_branch_taken1),  // if is_branch_takenin is 1 then flush the pipeline
+        .is_branch_takenin(1'b0),  // if is_branch_takenin is 1 then flush the pipeline
         .alusignals({isadd2, isld2, isst2, issub2, ismul2, iscmp2, ismov2, isor2, isand2, isnot2, islsl2, islsr2}),
         .instrin(instrdecodealu2),
         .op1(op12),
         .op2(op22),
         .immx(imm2),
         .isimmediate(imm_flag2),
+        .iswb(iswb2),
         .aluresult(aluresult2),
+        .isld1(isldalu2),
+        .isst1(isstalu2),
+        .op2_out(op21alu2),
+        .iswb_out(iswbalu2),
         .instrout(instralumem2)
     );
     //memory
+    wire [15:0] aluresultmem2,instrmemwb2;
+    wire isldmem2,iswbmem2;
     memory_unit memory_unit2(
         .clk(clk),
         .reset(reset),
-        .isld(isld2),
-        .isst(isst2),
+        .isld(isldalu2),
+        .isst(isstalu2),
+        .iswb(iswbalu2),
         .instr(instralumem2),
-        .op2(op22),
+        .op2(op22alu2),
         .aluresult(aluresult2),
         .ldresult(ldresult2),
-        .rdvalmem(rdvalmem2)
+        .rdvalmem(rdvalmem2),
+        .aluresult_out(aluresultmem2),
+        .isld_out(isldmem2),
+        .iswb_out(iswbmem2),
+        .instr_out(instrmemwb2)
     );
     //writeback
     writeback_unit writeback_unit2(
         .clk(clk),
-        .iswb(iswb2),
-        .isld(isld2),
-        .rd(rdvalmem2[2:0]),
+        .iswb(iswbmem2),
+        .isld(isldmem2),
+        .instr(instrmemwb2),
         .ldresult(ldresult2),
-        .aluresult(aluresult2)
+        .aluresult(aluresultmem2)
     );
 endmodule

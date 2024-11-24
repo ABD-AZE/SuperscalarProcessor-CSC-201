@@ -3,25 +3,34 @@ module memory_unit (
     input wire isld,
     input wire isst,
     input wire reset,
+    input wire iswb,
     input wire [15:0] instr,
     input wire [15:0] op2,
     input wire [15:0] aluresult,
+    output wire [15:0] aluresult_out,
+    output wire isld_out,
+    output wire iswb_out,
+    output wire [15:0] instr_out,
     output wire [15:0] ldresult,
     output wire [19:0] rdvalmem
 );
     integer i;
+    reg [15:0] aluresult_1;
+    reg [15:0] aluresult_reg;
+    reg [15:0] instr_rd;
+    reg [15:0] instr_1;
+    reg iswb_1;
+    reg iswb_reg;
+    reg isld_reg;
+    reg isld_1;
     reg [15:0] memory[0:31]; // Memory array to hold values from hex file , 32 addressess and 16 bit data
     initial begin
         $readmemh("data_memory.hex", memory);
         ld_reg = 16'h0000;
         ld = 16'h0000;
-        rd = 4'h0;   
-        instr_rd = 4'h0;  
     end
     integer file;
     reg [15:0] ld_reg,ld;
-    reg [3:0] rd;
-    reg [3:0] instr_rd;
     reg [19:0] result;
     reg [19:0] rdval;
     always @(posedge clk) begin
@@ -56,10 +65,20 @@ module memory_unit (
         end
         // $display("ldresult = %h", ld);
         ld <= ld_reg;
-        instr_rd <= instr[7:5];
-        rd <= instr_rd;
         rdval <= result;
+        aluresult_reg<=aluresult;
+        aluresult_1<=aluresult_reg;
+        isld_1<=isld;
+        isld_reg<=isld_1;
+        iswb_reg<=iswb;
+        iswb_1<=iswb_reg;
+        instr_rd<=instr;
+        instr_1<=instr_rd;
     end
     assign ldresult = ld;
     assign rdvalmem = rdval;
+    assign aluresult_out = aluresult_1;
+    assign iswb_out = iswb_1;
+    assign instr_out = instr_1;
+    assign isld_out = isld_reg;
 endmodule

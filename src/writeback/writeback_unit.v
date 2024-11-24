@@ -20,7 +20,7 @@ module writeback_unit(
             end else begin
                 result = aluresult;
             end
-            reg_file[instr[7:5]] = result;
+            reg_file[instr[10:8]] = result;
         end
     end
     always @(*) begin

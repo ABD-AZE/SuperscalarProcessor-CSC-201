@@ -22,11 +22,10 @@ module writeback_unit2(
         reg_file[7] = regvalwb[127:112];
         if (iswb) begin
             if (isld) begin
-                result = ldresult;
+                reg_file[instr[10:8]] = ldresult;
             end else begin
-                result = aluresult;
+                reg_file[instr[10:8]] = aluresult;
             end
-            reg_file[instr[10:8]] = aluresult;
             file = $fopen("registers.hex", "w");
             for (i = 0; i < 8; i = i + 1) begin
                 $fwrite(file, "%h\n", reg_file[i]); 

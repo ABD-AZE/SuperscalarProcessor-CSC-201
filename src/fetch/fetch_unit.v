@@ -13,7 +13,9 @@ module fetch_unit (
     reg [15:0] buffer [1:0];                  // 2-entry instruction buffer to hold current instructions
     reg [15:0] instr1_reg;
     reg [15:0] instr2_reg;
-
+    wire [15:0] buffer0,buffer1;
+    assign  buffer0 = buffer[0];
+    assign  buffer1 = buffer[1];
     // Initialize instruction memory and buffer (for simulation)
     initial begin
         $readmemh("instructions.hex", instruction_memory);

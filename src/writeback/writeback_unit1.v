@@ -17,16 +17,7 @@ module writeback_unit1(
     output wire [15:0] aluresultwb,
     output wire [127:0] regvalwb
 );
-//         .iswbin2(iswbmem2),
-//         .isldin2(isldmem2),
-//         .instrin2(instrmemwb2),
-//         .ldresultin2(ldresult2),
-//         .aluresultin2(aluresultmem2)
-//         .iswbout2(iswbwb),
-//         .isldout2(isldwb),
-//         .instrout2(instrwb),
-//         .ldresultout2(ldresultwb),
-//         .aluresultout2(aluresultwb)
+
     integer file;
     integer i;
     reg [127:0] regval_reg;

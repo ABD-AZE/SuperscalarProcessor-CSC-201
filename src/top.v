@@ -6,7 +6,6 @@
 // `include "fetch/relayer.v"
 // `include "execute/alu.v"
 // `include "decode/control_unit.v"
-
 module top_module();
     reg clk_reg;
     reg reset_reg;
@@ -84,21 +83,6 @@ module top_module();
     wire [15:0] instrdecodeexecute1;
     wire immflag1;
     wire [15:0] instrdecodealu1;
-// module decode_unit (
-//     input wire clk,
-//     input wire reset,
-//     input wire stall,                               // Stall signal
-//     input wire is_branch_taken,                     // Branch taken signal
-//     input wire [15:0] instr,                        // 16-bit instruction
-//     input wire [19:0] rdvalmem1,
-//     input wire [19:0] rdvalmem2,
-//     output wire [4:0] imm,                          // 5-bit immediate value
-//     output wire [3:0] opcode,                       // 4-bit Opcode
-//     output wire [15:0] branch_target,               // Calculated branch target
-//     output wire [15:0] op1, op2,                    // Operand values
-//     // output wire[15:0 ] instrout,
-//     output wire imm_flag                            // Immediate flag
-// );
     //decode unit
     decode_unit decode_unit1(
         .clk(clk),
@@ -119,26 +103,7 @@ module top_module();
     );
     // control unit
 
-    // input wire clk,
-    // input wire reset,
-    // input wire stall,
-    // input wire [3:0] opcode,  // 4-bit opcode from decode unit
-    // output wire isadd,
-    // output wire issub,
-    // output wire ismul,
-    // output wire isld,
-    // output wire isst,
-    // output wire iscmp,
-    // output wire ismov,
-    // output wire isor,
-    // output wire isand,
-    // output wire isnot,
-    // output wire islsl,
-    // output wire islsr,
-    // output wire isbeq,
-    // output wire isbgt,
-    // output wire iswb,
-    // output wire isubranch
+   
     wire isadd1;
     wire issub1;
     wire ismul1;
@@ -182,13 +147,7 @@ module top_module();
 
     //exec
 
-    // input wire [15:0] brachtarget,
-    // input wire isunconditionalbranch,
-    // input wire isBeq,
-    // input wire isBgt,
-    // input wire [127:0] regval,
-    // output wire [15:0] branchpc,
-    // output wire isbranchtaken
+    
     wire [15:0] branchpc1;
     reg [15:0] regmem[0:7];
     reg [127:0] regval;
@@ -216,37 +175,13 @@ module top_module();
         .isbranchtaken(is_branch_taken1)
     );
     //alu
-
-    // input wire clk,
-    // input wire [11:0] alusignals,
-    // input wire [15:0] instrin,
-    // /*
-    //     isadd
-    //     isld
-    //     isst
-    //     issub
-    //     ismul
-    //     iscmp
-    //     ismov
-    //     isor
-    //     isand
-    //     isnot
-    //     islsl
-    //     islsr
-    // */  
-    // input wire [15:0] op1,
-    // input wire [15:0] op2,
-    // input wire [4:0] immx,
-    // input wire isimmediate,
-    // output wire [15:0] aluresult,
-    // output wire [15:0] instrout
     wire isldalu1,isstalu1,iswbalu1;
     wire [15:0] op21alu1; 
     wire [15:0] instralumem1;
     alu alu1(
         .clk(clk),
         .reset(reset),
-        .is_branch_takenin(1'b0),  // if is_branch_takenin is 1 then flush the pipeline
+        .is_branch_takenin(1'b0),  
         .alusignals({islsr1, islsl1, isnot1, isand1, isor1, ismov1, iscmp1, ismul1, issub1, isst1, isld1, isadd1}),
         .instrin(instrdecodealu1),
         .op1(op11),
@@ -263,14 +198,6 @@ module top_module();
     );
     //memory 
 
-    // input wire clk,
-    // input wire isld,
-    // input wire isst,
-    // input wire [15:0] instr,
-    // input wire [15:0] op2,
-    // input wire [15:0] aluresult,
-    // output wire [15:0] ldresult,
-    // output wire [19:0] rdvalmem
     wire [15:0] ldresult1;
     wire [15:0] aluresult1;
     wire [15:0] aluresultmem1,instrmemwb1;
@@ -384,7 +311,7 @@ module top_module();
     alu alu2(
         .clk(clk),
         .reset(reset),
-        .is_branch_takenin(1'b0),  // if is_branch_takenin is 1 then flush the pipeline
+        .is_branch_takenin(1'b0),  
         .alusignals({islsr2, islsl2, isnot2, isand2, isor2, ismov2, iscmp2, ismul2, issub2, isst2, isld2, isadd2}),
         .instrin(instrdecodealu2),
         .op1(op12),

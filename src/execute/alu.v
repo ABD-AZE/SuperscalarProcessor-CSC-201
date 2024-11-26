@@ -17,7 +17,6 @@ module alu(
     output wire iswb_out
 );
 
-    // Internal Registers
     reg [15:0] op2_1;
     reg isld1_1;
     reg isst1_1;
@@ -28,7 +27,6 @@ module alu(
     reg [15:0] B;
     wire isadd, issub, ismul, isld, isst, iscmp, ismov, isor, isand, isnot, islsl, islsr;
 
-    // ALU Control Signals
     assign isadd = alusignals[0];
     assign isld = alusignals[1];
     assign isst = alusignals[2];
@@ -42,7 +40,6 @@ module alu(
     assign islsl = alusignals[10];
     assign islsr = alusignals[11];
 
-    // Internal State
     reg isadd_reg, isld_reg, isst_reg, issub_reg, ismul_reg, iscmp_reg, ismov_reg, isor_reg, isand_reg, isnot_reg, islsl_reg, islsr_reg;
     reg isimmediate_reg;
     reg [15:0] op1_reg, op2_reg;
@@ -51,7 +48,6 @@ module alu(
     reg [15:0] instrout_reg, instrout_reg1;
     reg [15:0] result_1;
 
-    // Initialize Internal Registers
     initial begin
         $readmemh("registers.hex", reg_file);
         isadd_reg = 0; isld_reg = 0; isst_reg = 0; issub_reg = 0; ismul_reg = 0;
@@ -61,13 +57,11 @@ module alu(
         instrout_reg = 16'b0; instrout_reg1 = 16'b0;
         result = 16'b0;
     end
-    // ALU Logic
     always @(posedge clk) begin
         if (is_branch_takenin || reset) begin
             result <= 16'h0;
             instrout_reg <= 16'h0;
         end else begin
-            // Operand Selection
             if (isimmediate) begin
                 A = op1;
                 B = immx;
@@ -76,7 +70,6 @@ module alu(
                 B = op2;
             end
 
-            // Perform ALU Operation
             if (isadd||isld||isst) result <= A + B;
             else if (issub) result <= A - B;
             else if (ismul) result <= A * B;
@@ -93,7 +86,6 @@ module alu(
             else result <= 16'b0;
         end
 
-        // Handle Branch Taken
         if (!is_branch_takenin) instrout_reg <= instrin;
 
         instrout_reg1 <= instrout_reg;
@@ -106,7 +98,6 @@ module alu(
         iswb1_1 <= iswb1_reg;
     end
 
-    // Output Assignments
     assign aluresult = result;
     assign instrout = instrout_reg;
     assign op2_out = op2_reg;

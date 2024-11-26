@@ -22,7 +22,7 @@ module memory_unit (
     reg iswb_reg;
     reg isld_reg;
     reg isld_1;
-    reg [15:0] memory[0:31]; // Memory array to hold values from hex file , 32 addressess and 16 bit data
+    reg [15:0] memory[0:31];
     initial begin
         $readmemh("data_memory.hex", memory);
         ld_reg = 16'h0000;

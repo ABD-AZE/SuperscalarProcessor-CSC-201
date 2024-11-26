@@ -10,7 +10,7 @@ test 1:
         22D0
         1FE4
 
-test 2:
+test 2: (using branch instruction)
     add r1 r1 r2
     sub r3 r5 r4
     JUMP      6
@@ -23,14 +23,14 @@ test 2:
     instr:
         1128
         23B0
-        C806
+        C805
         22D0
         1FE4
         3290
         8ED1
         1DA1
 
-test 3:
+test 3: (without branch)
     add r1 r1 r2
     sub r3 r5 r4
     sub r2 r6 r4
@@ -48,4 +48,14 @@ test 3:
 	    8ED1
 	    1DA1
 
+test 4(testing logical operations):
+    lsl r2 r2 3
+    lsr r3 r3 r1
+    Or r5 r5 r6
+    And r4 r4 2
 
+    instr:
+        BA43
+        D364
+        85B8
+        9C82

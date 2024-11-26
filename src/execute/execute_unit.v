@@ -21,7 +21,6 @@
             isbranchtaken_reg <= 0;
         end
         always @(regval) begin
-            // Using a loop to assign 16-bit segments to each reg_file entry
             reg_file[0] = regval[15:0];
             reg_file[1] = regval[31:16];
             reg_file[2] = regval[47:32];

@@ -40,6 +40,8 @@ module relayer_unit(
     reg [15:0] instr2_out;
     reg issingleinstr_reg;
     reg [15:0] tempinstr1,tempinstr2;
+    integer t=0;
+    reg [15:0] tinstr1, tinstr2;
     always @(*) begin
         p=0;
         if(!isstall_reg) begin
@@ -169,9 +171,20 @@ module relayer_unit(
         else begin
             issingleinstr_reg = 0;
         end
+
+        if(t==1) begin
+            t=0;
+            instr1_out=tinstr1;
+            instr2_out=tinstr2;
+        end
+        if(isstall_reg==0 && instr1_out==16'h0 && instr2_out==16'h0) begin
+            t=1;
+            tinstr1=instr1_in;
+            tinstr2=instr2_in;
+        end
     end
     assign instr1_o = instr1_out;
     assign instr2_o = instr2_out;
     assign issingleinstr = issingleinstr_reg;
-    assign isstall = isstall_reg;
+    assign isstall = 0;
 endmodule

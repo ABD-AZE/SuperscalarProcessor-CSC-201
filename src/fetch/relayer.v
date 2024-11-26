@@ -21,7 +21,6 @@ module relayer_unit(
     assign buffer22 = buffer2[1];
     integer i = 0;
     integer p=0;
-    reg check = 0;
     initial begin
         buffer1[0] = 16'b0;
         buffer1[1] = 16'b0;
@@ -30,8 +29,6 @@ module relayer_unit(
         singinstr = 16'b0;
         issingleinstr_reg = 0;
         isstall_reg = 0;
-        tempinstr1 = 16'b0;
-        tempinstr2 = 16'b0; 
     end
     reg [15:0] instr1;
     reg [15:0] instr2;
@@ -39,15 +36,10 @@ module relayer_unit(
     reg [15:0] instr1_out;
     reg [15:0] instr2_out;
     reg issingleinstr_reg;
-    reg [15:0] tempinstr1,tempinstr2;
-    integer t=0;
-    reg [15:0] tinstr1, tinstr2;
     always @(*) begin
         p=0;
-        if(!isstall_reg) begin
-            instr1 = instr1_in;
-            instr2 = instr2_in;
-        end
+        instr1 = instr1_in;
+        instr2 = instr2_in;
         isstall_reg = 0;
         if (singinstr[15:12] != 4'b0) begin
             instr2 = instr1;
@@ -57,7 +49,6 @@ module relayer_unit(
             instr1_out=nop;
             instr2_out=nop;
             isstall_reg=0;
-            check = 0;
         end
         else if(instr1[15:12] == nopop) begin
             instr1_out=nop;
@@ -108,9 +99,6 @@ module relayer_unit(
                 instr1_out = nop;
                 instr2_out = nop;
                 isstall_reg = 1;
-                tempinstr1 = instr1;
-                tempinstr2 = instr2;
-                check = 1;
             end
             else begin
                 instr1_out = instr1;
@@ -171,20 +159,9 @@ module relayer_unit(
         else begin
             issingleinstr_reg = 0;
         end
-
-        if(t==1) begin
-            t=0;
-            instr1_out=tinstr1;
-            instr2_out=tinstr2;
-        end
-        if(isstall_reg==0 && instr1_out==16'h0 && instr2_out==16'h0) begin
-            t=1;
-            tinstr1=instr1_in;
-            tinstr2=instr2_in;
-        end
     end
     assign instr1_o = instr1_out;
     assign instr2_o = instr2_out;
     assign issingleinstr = issingleinstr_reg;
-    assign isstall = 0;
+    assign isstall = isstall_reg;
 endmodule

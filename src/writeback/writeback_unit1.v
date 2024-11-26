@@ -52,7 +52,12 @@ module writeback_unit1(
             end else begin
                 result = aluresult;
             end
-            reg_file[instr[10:8]] = aluresult;
+            reg_file[instr[10:8]] = result;
+            file = $fopen("registers.hex", "w");
+            for (i = 0; i < 8; i = i + 1) begin
+                $fwrite(file, "%h\n", reg_file[i]); 
+            end
+            $fclose(file);
         end
         regval_reg = {reg_file[7], reg_file[6], reg_file[5], reg_file[4], reg_file[3], reg_file[2], reg_file[1], reg_file[0]};
         iswbwb_reg <= iswbin2;

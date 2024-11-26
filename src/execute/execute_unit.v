@@ -13,9 +13,13 @@
         integer i;
         reg [15:0] reg_file [0:7];
         reg [15:0] branchpc_reg;
-        reg [15:0] isbranchtaken_reg; 
+        reg isbranchtaken_reg; 
         reg [15:0] branchpc_reg1;
         reg [15:0] isbranchtaken_reg1; 
+        initial begin
+            branchpc_reg <= 16'b0;
+            isbranchtaken_reg <= 0;
+        end
         always @(regval) begin
             // Using a loop to assign 16-bit segments to each reg_file entry
             reg_file[0] = regval[15:0];
@@ -26,9 +30,6 @@
             reg_file[5] = regval[95:80];
             reg_file[6] = regval[111:96];
             reg_file[7] = regval[127:112];
-            for (i = 0; i < 8; i = i + 1) begin
-                // $display("reg_file[%0d] = %h", i, reg_file[i]);
-            end
         end
         always @(posedge clk) begin
             if (reset) begin

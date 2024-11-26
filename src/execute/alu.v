@@ -98,6 +98,7 @@ module alu(
 
         instrout_reg1 <= instrout_reg;
         result_1 <= result;
+        op2_reg <= op2;
         op2_1 <= op2_reg;
         isld1_1 <= isld_reg;
         isst1_1 <= isst_reg;
@@ -112,5 +113,4 @@ module alu(
     assign iswb_out = iswb1_reg;
     assign isld1 = isld_reg;
     assign isst1 = isst_reg;
-
 endmodule

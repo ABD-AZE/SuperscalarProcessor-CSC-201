@@ -33,7 +33,13 @@ module decode_unit (
     // Load the hex file at the start
     initial begin
         $readmemh("registers.hex", registers);      // Load values from hex file
-        
+        opcode_next <= 4'h0;
+        imm_next <= 5'h00;
+        branch_target_next <= 16'h0;
+        op1_next <= 16'h0;
+        op2_next <= 16'h0;
+        instrun <= 16'h0;
+        imm_flag_next <= 0;
     end
 
     // Decode logic - computes values in the current cycle but stores them in the pipeline registers

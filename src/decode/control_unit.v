@@ -80,6 +80,25 @@ module control_unit(
     localparam BEQ_OP      = 4'b1110;
     localparam BGT_OP      = 4'b1111;
 
+    initial begin
+        isadd_next      = 0;
+        issub_next      = 0;
+        ismul_next      = 0;
+        isld_next       = 0;
+        isst_next       = 0;
+        iscmp_next      = 0;
+        ismov_next      = 0;
+        isor_next       = 0;
+        isand_next      = 0;
+        isnot_next      = 0;
+        islsl_next      = 0;
+        islsr_next      = 0;
+        isbeq_next      = 0;
+        isbgt_next      = 0;
+        iswb_next       = 0;
+        isubranch_next  = 0;
+    end
+
     always @(posedge clk or posedge reset) begin
         if (reset || is_branch_taken) begin
             // Reset all internal registers to 0

@@ -10,3 +10,42 @@ test 1:
         22D0
         1FE4
 
+test 2:
+    add r1 r1 r2
+    sub r3 r5 r4
+    JUMP      6
+    sub r2 r6 r4
+    add r7 r7 4
+    mul r2 r4 r4
+    or  r6 r6 17
+    add r5 r5 1
+
+    instr:
+        1128
+        23B0
+        C806
+        22D0
+        1FE4
+        3290
+        8ED1
+        1DA1
+
+test 3:
+    add r1 r1 r2
+    sub r3 r5 r4
+    sub r2 r6 r4
+    add r7 r7 4
+    mul r2 r4 r4
+    or  r6 r6 17
+    add r5 r5 1
+
+    instr:
+	    1128
+        23B0
+        22D0
+        1FE4
+	    3290
+	    8ED1
+	    1DA1
+
+

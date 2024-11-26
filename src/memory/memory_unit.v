@@ -30,6 +30,9 @@ module memory_unit (
         aluresult_reg = 16'h0000;
         result = 19'h00000;
         rdval = 19'h00000;
+        iswb_reg = 0;
+        isld_reg = 0;
+        instr_rd = 16'h0;   
     end
     integer file;
     reg [15:0] ld_reg,ld;

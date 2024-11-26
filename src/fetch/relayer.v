@@ -113,7 +113,7 @@ module relayer_unit(
             else begin
                 instr1_out = instr1;
                 if(instr1!=nop) begin
-                    if(!(((instr2[10:8] != instr1[10:8])&&(instr2[10:8]!=instr1[7:5])&&(instr1[11]==1))||((instr2[10:8] != instr1[10:8])&&(instr2[10:8]!=instr1[7:5])&&(instr1[11]==0)&&instr2[10:8]!=instr1[4:2])&&(((instr1[10:8] != instr2[10:8])&&(instr1[10:8]!=instr2[7:5])&&(instr2[11]==1))||((instr1[10:8] != instr2[10:8])&&(instr1[10:8]!=instr2[7:5])&&(instr2[11]==0)&&instr1[10:8]!=instr2[4:2])))) begin
+                    if(!(instr2[10:8]!=instr1[10:8]&&instr2[10:8]!=instr1[7:5]&&instr1[10:8]!=instr2[7:5]&&((instr1[11]==0&&instr2[10:8]!=instr1[4:2])||(instr1[11]==1))&&((instr2[11]==0&&instr1[10:8]!=instr2[4:2])||(instr2[11]==1)))) begin  
                         p=1;              
                     end     
                     if (p==1) begin

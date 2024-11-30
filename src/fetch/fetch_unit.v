@@ -28,8 +28,8 @@ module fetch_unit (
         if (reset) begin
             // On reset, clear PC and buffer
             pc = 0;
-            buffer[0] = instruction_memory[0]; // Initialize buffer with first instruction
-            buffer[1] = instruction_memory[1]; // Initialize buffer with second instruction
+            buffer[0] = 16'b0; // Initialize buffer with first instruction
+            buffer[1] = 16'b0; // Initialize buffer with second instruction
             instr1_reg = 16'h0;
             instr2_reg = 16'h0;
         end 

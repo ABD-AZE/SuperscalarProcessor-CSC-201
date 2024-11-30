@@ -57,9 +57,10 @@ module alu(
         isadd_reg = 0; isld_reg = 0; isst_reg = 0; issub_reg = 0; ismul_reg = 0;
         iscmp_reg = 0; ismov_reg = 0; isor_reg = 0; isand_reg = 0; isnot_reg = 0;
         islsl_reg = 0; islsr_reg = 0; isimmediate_reg = 0;
-        op1_reg = 0; op2_reg = 0; immx_reg = 0; instrout_reg = 0; instrout_reg1 = 0;
+        op1_reg = 16'b0; op2_reg = 16'b0; immx_reg = 5'b0;
+        instrout_reg = 16'b0; instrout_reg1 = 16'b0;
+        result = 16'b0;
     end
-
     // ALU Logic
     always @(posedge clk) begin
         if (is_branch_takenin || reset) begin
@@ -67,49 +68,30 @@ module alu(
             instrout_reg <= 16'h0;
         end else begin
             // Operand Selection
-            if (isimmediate_reg) begin
-                A <= op1;
-                B <= immx;
+            if (isimmediate) begin
+                A = op1;
+                B = immx;
             end else begin
-                A <= op1;
-                B <= op2;
+                A = op1;
+                B = op2;
             end
 
             // Perform ALU Operation
-            if (isadd_reg) result <= A + B;
-            else if (issub_reg) result <= A - B;
-            else if (ismul_reg) result <= A * B;
-            else if (iscmp_reg) begin
+            if (isadd||isld||isst) result <= A + B;
+            else if (issub) result <= A - B;
+            else if (ismul) result <= A * B;
+            else if (iscmp) begin
                 if (A == B) result <= 16'b1;
                 else if (A > B) result <= 16'h2;
                 else result <= 16'h0;
-            end else if (ismov_reg) result <= B;
-            else if (isor_reg) result <= A | B;
-            else if (isand_reg) result <= A & B;
-            else if (isnot_reg) result <= ~A;
-            else if (islsl_reg) result <= A << B;
-            else if (islsr_reg) result <= A >> B;
+            end else if (ismov) result <= B;
+            else if (isor) result <= A | B;
+            else if (isand) result <= A & B;
+            else if (isnot) result <= ~A;
+            else if (islsl) result <= A << B;
+            else if (islsr) result <= A >> B;
             else result <= 16'b0;
         end
-
-        // Update Internal State
-        isadd_reg <= isadd;
-        isld_reg <= isld;
-        isadd_reg <= isst;
-        isadd_reg <= isld;
-        isst_reg <= isst;
-        issub_reg <= issub;
-        ismul_reg <= ismul;
-        iscmp_reg <= iscmp;
-        ismov_reg <= ismov;
-        isor_reg <= isor;
-        isand_reg <= isand;
-        isnot_reg <= isnot;
-        islsl_reg <= islsl;
-        islsr_reg <= islsr;
-        isimmediate_reg <= isimmediate;
-        op1_reg <= op1;
-        op2_reg <= op2;
 
         // Handle Branch Taken
         if (!is_branch_takenin) instrout_reg <= instrin;
@@ -125,10 +107,10 @@ module alu(
 
     // Output Assignments
     assign aluresult = result;
-    assign instrout = instrout_reg1;
-    assign op2_out = op2_1;
-    assign iswb_out = iswb1_1;
-    assign isld1 = isld1_1;
-    assign isst1 = isst1_1;
+    assign instrout = instrout_reg;
+    assign op2_out = op2_reg;
+    assign iswb_out = iswb1_reg;
+    assign isld1 = isld_reg;
+    assign isst1 = isst_reg;
 
 endmodule

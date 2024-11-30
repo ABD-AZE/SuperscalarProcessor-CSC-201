@@ -15,7 +15,6 @@ module memory_unit (
     output wire [19:0] rdvalmem
 );
     integer i;
-    reg [15:0] aluresult_1;
     reg [15:0] aluresult_reg;
     reg [15:0] instr_rd;
     reg [15:0] instr_1;
@@ -28,6 +27,9 @@ module memory_unit (
         $readmemh("data_memory.hex", memory);
         ld_reg = 16'h0000;
         ld = 16'h0000;
+        aluresult_reg = 16'h0000;
+        result = 19'h00000;
+        rdval = 19'h00000;
     end
     integer file;
     reg [15:0] ld_reg,ld;
@@ -37,6 +39,7 @@ module memory_unit (
         if(reset) begin
             ld_reg <= 16'h0;
             result <= 19'h0;
+            aluresult_reg <= 16'h0;
         end
         else if (isld) begin
             $readmemh("data_memory.hex", memory);
@@ -54,20 +57,21 @@ module memory_unit (
             end
             ld_reg <= 16'h0000;
             $fclose(file);
-            result <= {1'h1,19'h0};
+            result <= {19'h0,1'h1};
             // $display("rdval = %h", result);
         end
         else begin 
             ld_reg <= 16'h0000;
             // result_1 = {aluresult, instr[7:5]};
-            result <= {1'h0,aluresult, instr[10:8]};
-            // $display("rdval = %h", result);
+            result <={instr[10:8],aluresult,1'h0};
+            // $display("rdval = %h", result);x
         end
         // $display("ldresult = %h", ld);
-        ld <= ld_reg;
-        rdval <= result;
         aluresult_reg<=aluresult;
-        aluresult_1<=aluresult_reg;
+        $display("aluresult: ", aluresult);
+        $display("aluresult_reg: ", aluresult_reg);
+        ld<=ld_reg;
+        rdval<=result;
         isld_1<=isld;
         isld_reg<=isld_1;
         iswb_reg<=iswb;
@@ -76,9 +80,9 @@ module memory_unit (
         instr_1<=instr_rd;
     end
     assign ldresult = ld;
-    assign rdvalmem = rdval;
-    assign aluresult_out = aluresult_1;
-    assign iswb_out = iswb_1;
-    assign instr_out = instr_1;
+    assign rdvalmem = result;
+    assign aluresult_out = aluresult_reg;
+    assign iswb_out = iswb_reg;
+    assign instr_out = instr_rd;
     assign isld_out = isld_reg;
 endmodule

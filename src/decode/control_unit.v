@@ -201,7 +201,7 @@ module control_unit(
                 end
                 default: ; // Do nothing for unrecognized opcodes
             endcase
-        end else if (!stall) begin
+        end else if (1) begin
             // Reset all the internal registers to 0 before decoding
             isadd_next      <= 0;
             issub_next      <= 0;
@@ -321,22 +321,22 @@ module control_unit(
         isubranch_reg  <= isubranch_next;
         // end      
     end
-    assign isadd      = isadd_reg;
-    assign issub      = issub_reg;
-    assign ismul      = ismul_reg;
-    assign isld       = isld_reg;
-    assign isst       = isst_reg;
-    assign iscmp      = iscmp_reg;
-    assign ismov      = ismov_reg;
-    assign isor       = isor_reg;
-    assign isand      = isand_reg;
-    assign isnot      = isnot_reg;
-    assign islsl      = islsl_reg;
-    assign islsr      = islsr_reg;
-    assign isbeq      = isbeq_reg;
-    assign isbgt      = isbgt_reg;
-    assign iswb       = iswb_reg;
-    assign isubranch  = isubranch_reg;
+    assign isadd      = isadd_next;
+    assign issub      = issub_next;
+    assign ismul      = ismul_next;
+    assign isld       = isld_next;
+    assign isst       = isst_next;
+    assign iscmp      = iscmp_next;
+    assign ismov      = ismov_next;
+    assign isor       = isor_next;
+    assign isand      = isand_next;
+    assign isnot      = isnot_next;
+    assign islsl      = islsl_next;
+    assign islsr      = islsr_next;
+    assign isbeq      = isbeq_next;
+    assign isbgt      = isbgt_next;
+    assign iswb       = iswb_next;
+    assign isubranch  = isubranch_next;
     // always @(*) begin
     //     if(stall) begin
     //         isadd_reg      <= isadd_next;

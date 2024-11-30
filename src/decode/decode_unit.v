@@ -33,6 +33,7 @@ module decode_unit (
     // Load the hex file at the start
     initial begin
         $readmemh("registers.hex", registers);      // Load values from hex file
+        
     end
 
     // Decode logic - computes values in the current cycle but stores them in the pipeline registers
@@ -55,7 +56,7 @@ module decode_unit (
             op2_next <= 16'h0;
             branch_target_next <= 16'h0;
             instrun <=16'h0;
-        end else if (!stall) begin
+        end else if (1) begin
             // Decode instruction and load next-cycle values into pipeline registers
             if((rdvalmem1[19]==0)&&(rdvalmem1[2:0]==instr[7:5])) begin
                 op1_next<=rdvalmem1[18:3];
@@ -103,7 +104,7 @@ module decode_unit (
         op2_reg <= op2_next;
         imm_flag_reg <= imm_flag_next;
         instrn <= instrun;
-        if(stall) begin 
+        if(0) begin 
             opcode_reg <= 4'h0;
             imm_reg <= 5'h00;
             imm_flag_reg <= 0;
@@ -113,11 +114,11 @@ module decode_unit (
         end
     end
     // Continuous assignments to output wires
-    assign opcode = opcode_reg;
-    assign imm = imm_reg;
-    assign branch_target = branch_target_reg;
-    assign op1 = op1_reg;
-    assign op2 = op2_reg;
-    assign imm_flag = imm_flag_reg;
-    assign instrout= instrn;
+    assign opcode = opcode_next;
+    assign imm = imm_next;
+    assign branch_target = branch_target_next;
+    assign op1 = op1_next;
+    assign op2 = op2_next;
+    assign imm_flag = imm_flag_next;
+    assign instrout= instrun;
 endmodule

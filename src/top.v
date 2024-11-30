@@ -9,8 +9,11 @@
 
 module top_module();
     reg clk_reg;
+    reg reset_reg;
     initial begin
         clk_reg = 0;
+        reset_reg = 1;
+        #10  reset_reg = 0;
         forever begin
             #5 clk_reg = ~clk_reg;
         end
@@ -18,6 +21,7 @@ module top_module();
     wire clk;
     assign clk=clk_reg;
     wire reset;
+    assign reset=reset_reg;
     wire is_branch_taken;
     wire issingleinstr;
     wire stall;
@@ -186,7 +190,7 @@ module top_module();
     // output wire [15:0] branchpc,
     // output wire isbranchtaken
     wire [15:0] branchpc1;
-    reg [31:0] regmem[0:7];
+    reg [15:0] regmem[0:7];
     reg [127:0] regval;
     integer i;
     always@(posedge clk) begin
@@ -196,7 +200,7 @@ module top_module();
         else begin
             $readmemh("registers.hex", regmem);
         end
-        regval = {regmem[0], regmem[1], regmem[2], regmem[3], regmem[4], regmem[5], regmem[6], regmem[7]};
+        regval = {regmem[7], regmem[6], regmem[5], regmem[4], regmem[3], regmem[2], regmem[1], regmem[0]};
     end
     
 
@@ -243,12 +247,12 @@ module top_module();
         .clk(clk),
         .reset(reset),
         .is_branch_takenin(1'b0),  // if is_branch_takenin is 1 then flush the pipeline
-        .alusignals({isadd1, isld1, isst1, issub1, ismul1, iscmp1, ismov1, isor1, isand1, isnot1, islsl1, islsr1}),
+        .alusignals({islsr1, islsl1, isnot1, isand1, isor1, ismov1, iscmp1, ismul1, issub1, isst1, isld1, isadd1}),
         .instrin(instrdecodealu1),
         .op1(op11),
         .op2(op21),
         .immx(imm1),
-        .isimmediate(imm_flag1),
+        .isimmediate(immflag1),
         .iswb(iswb1),
         .aluresult(aluresult1),
         .isld1(isldalu1),
@@ -288,13 +292,26 @@ module top_module();
         .instr_out(instrmemwb1)
     );
     //writeback
-    writeback_unit writeback_unit1(
+    wire [15:0] aluresultwb,instrwb,ldresultwb;
+    wire isldwb,iswbwb;
+    writeback_unit1 writeback_unit1(
         .clk(clk),
         .iswb(iswbmem1),
         .isld(isldmem1),
         .instr(instrmemwb1),
         .ldresult(ldresult1),
-        .aluresult(aluresultmem1)
+        .aluresult(aluresultmem1),
+        .iswbin2(iswbmem2),
+        .isldmem2(isldmem2),
+        .instrmemwb2(instrmemwb2),
+        .ldresult2(ldresult2),
+        .aluresultmem2(aluresultmem2),
+        .iswbwb(iswbwb),
+        .isldwb(isldwb),
+        .instrwb(instrwb),
+        .ldresultwb(ldresultwb),
+        .aluresultwb(aluresultwb),
+        .regvalwb(regvalwb)
     );
 
     // pipeline 2
@@ -368,7 +385,7 @@ module top_module();
         .clk(clk),
         .reset(reset),
         .is_branch_takenin(1'b0),  // if is_branch_takenin is 1 then flush the pipeline
-        .alusignals({isadd2, isld2, isst2, issub2, ismul2, iscmp2, ismov2, isor2, isand2, isnot2, islsl2, islsr2}),
+        .alusignals({islsr2, islsl2, isnot2, isand2, isor2, ismov2, iscmp2, ismul2, issub2, isst2, isld2, isadd2}),
         .instrin(instrdecodealu2),
         .op1(op12),
         .op2(op22),
@@ -402,12 +419,14 @@ module top_module();
         .instr_out(instrmemwb2)
     );
     //writeback
-    writeback_unit writeback_unit2(
+    wire [127:0] regvalwb;
+    writeback_unit2 writeback_unit2(
         .clk(clk),
-        .iswb(iswbmem2),
-        .isld(isldmem2),
-        .instr(instrmemwb2),
-        .ldresult(ldresult2),
-        .aluresult(aluresultmem2)
+        .iswb(iswbwb),
+        .isld(isldwb),
+        .instr(instrwb),
+        .ldresult(ldresultwb),
+        .aluresult(aluresultwb),
+        .regvalwb(regvalwb)
     );
 endmodule

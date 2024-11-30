@@ -46,6 +46,6 @@
             branchpc_reg1 <= branchpc_reg;
             isbranchtaken_reg1 <= isbranchtaken_reg;
         end
-        assign branchpc = branchpc_reg1;
-        assign isbranchtaken  = isbranchtaken_reg1;
+        assign branchpc = branchpc_reg;
+        assign isbranchtaken  = isbranchtaken_reg;
     endmodule
